@@ -14,13 +14,13 @@ const AppRoutes = () => {
     <BrowserRouter>
       <Routes>
         {/* LOGIN */}
-        <Route path="/login" element={<LoginPage />} />
+        <Route path="/" element={<LoginPage />} />
 
         {/* USER AREA */}
         <Route
           path="/home"
           element={
-            <ProtectedRoute allowedRole="user">
+            <ProtectedRoute allowedRole="{['USER', 'ADMIN']}">
               <MainLayout>
                 <HomePage />
               </MainLayout>
@@ -32,8 +32,10 @@ const AppRoutes = () => {
         <Route
           path="/admin"
           element={
-            <ProtectedRoute allowedRole="admin">
-              <AdminLayout />
+            <ProtectedRoute allowedRole="{['ADMIN']}">
+              <MainLayout>
+                <AdminLayout />
+              </MainLayout>
             </ProtectedRoute>
           }>
           <Route index element={<AdminDashboard />} />
