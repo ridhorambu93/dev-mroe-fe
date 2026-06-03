@@ -1,25 +1,9 @@
-const Input = ({
-  label,
-  name,
-  type = "text",
-  value,
-  onChange,
-  placeholder = "",
-}) => {
+const Button = ({ children, type = "button", className = "", ...props }) => {
   return (
-    <div>
-      <label className="block text-sm mb-2">{label}</label>
-
-      <input
-        type={type}
-        name={name}
-        value={value}
-        onChange={onChange}
-        placeholder={placeholder}
-        className="w-full border border-blue-300 rounded-xl px-4 py-3 bg-white"
-      />
-    </div>
+    <button type={type} className={className} {...props}>
+      {children}
+    </button>
   )
 }
 
-export default Input
+export default Button

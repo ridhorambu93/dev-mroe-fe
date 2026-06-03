@@ -1,50 +1,41 @@
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
+import { useAuth } from "../../store/AuthContext"
+
 import Input from "../Input"
 import Button from "../Button"
 
 const LoginForm = () => {
+  const [username, setUsername] = useState("")
+  const [password, setPassword] = useState("")
+
   const navigate = useNavigate()
-
-  const DUMMY_USER = [
-    {
-      username: "admin",
-      password: "admin123",
-    },
-    {
-      username: "user",
-      password: "user123",
-    },
-  ]
-
-  const [form, setForm] = useState({
-    username: "",
-    password: "",
-  })
-
-  const handleChange = (e) => {
-    setForm({
-      ...form,
-      [e.target.name]: e.target.value,
-    })
-  }
+  const { login } = useAuth()
 
   const handleSubmit = (e) => {
     e.preventDefault()
 
-    const user = DUMMY_USER.find(
-      (u) => u.username === form.username && u.password === form.password,
-    )
+    if (!username || !password) {
+      alert("Username dan password wajib diisi")
+      return
+    }
 
-    if (user) {
-      navigate("/home")
+    const role = username.toLowerCase() === "admin" ? "ADMIN" : "USER"
+
+    login({
+      username,
+      role,
+    })
+
+    if (role === "ADMIN") {
+      navigate("/admin")
     } else {
-      alert("Username atau password salah")
+      navigate("/home")
     }
   }
 
   return (
-    <div className="max-w-md">
+    <div className="max-w-md mx-auto py-8">
       <h1 className="text-4xl font-medium mb-4">
         Selamat datang di situs Research and Office of Economist bank bjb
       </h1>
@@ -55,25 +46,27 @@ const LoginForm = () => {
 
       <form onSubmit={handleSubmit} className="space-y-6">
         <Input
-          label="User"
+          label="Username"
           name="username"
-          value={form.username}
-          onChange={handleChange}
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
         />
 
         <Input
           label="Kata Sandi"
           type="password"
           name="password"
-          value={form.password}
-          onChange={handleChange}
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
         />
 
-        <Button
-          type="submit"
-          className="bg-yellow-400 hover:bg-yellow-500 transition px-10 py-3 rounded-lg">
-          Sign In
-        </Button>
+        <div className="flex justify-center">
+          <Button
+            type="submit"
+            className="bg-yellow-400 hover:bg-yellow-500 px-10 py-3 rounded-lg">
+            Sign In
+          </Button>
+        </div>
       </form>
     </div>
   )
