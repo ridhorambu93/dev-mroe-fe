@@ -1,13 +1,12 @@
 /* eslint-disable no-unused-vars */
 import { useEffect, useState } from "react"
-
+import indicatorBanner from "../assets/images/home/indicator-image.png"
 import { getIndicators } from "../services/indicatorService"
 import { publicationService } from "../services/publicationService"
 
 const HomePage = () => {
   const [indicatorImage, setIndicatorImage] = useState("")
   const [publications, setPublications] = useState([])
-
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
 
@@ -20,7 +19,7 @@ const HomePage = () => {
         const indicatorData = await getIndicators()
         const data = await publicationService.getPublications()
 
-        setIndicatorImage(indicatorData.image || "")
+        setIndicatorImage("")
         setPublications(data || [])
       } catch (err) {
         setError("Gagal memuat data")
@@ -63,9 +62,9 @@ const HomePage = () => {
       <section className="bg-white border rounded-lg p-4 mb-12">
         <h2 className="font-semibold text-[#00549F] mb-4">Data Indikator</h2>
 
-        {indicatorImage ? (
+        {indicatorBanner ? (
           <img
-            src={indicatorImage}
+            src={indicatorBanner}
             alt="Data Indikator"
             className="w-full rounded-md object-cover"
           />
