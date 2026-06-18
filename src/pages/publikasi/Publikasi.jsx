@@ -1,38 +1,74 @@
-import { useEffect, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { publicationService } from "../../services/publicationService"
+import publicationBanner from "../../assets/images/publikasi/publication-banner.png"
 
 export default function Publikasi() {
   const [data, setData] = useState([])
+  // state
+  const [activeTab, setActiveTab] = useState("all")
   const [search, setSearch] = useState("")
   const [openMonth, setOpenMonth] = useState(null)
   const [loading, setLoading] = useState(true)
 
-  useEffect(() => {
-    // eslint-disable-next-line react-hooks/immutability
-    fetchData()
+  // fetch data
+  const fetchData = useCallback(async () => {
+    try {
+      setLoading(true)
+      const res = await publicationService.getPublications()
+      setData(Array.isArray(res) ? res : [])
+    } catch (error) {
+      console.error("Failed to fetch publications:", error)
+      setData([])
+    } finally {
+      setLoading(false)
+    }
   }, [])
 
-  const fetchData = async () => {
-    setLoading(true)
-    const res = await publicationService.getPublications()
-    setData(res)
-    setLoading(false)
-  }
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    fetchData()
+  }, [fetchData])
 
-  // 🔍 SEARCH (client-side dulu, nanti pindah ke API tanpa ubah UI)
+
+  const tabs = useMemo(() => {
+    const categories = data.map((item) => item.category)
+    const unique = [...new Set(categories)]
+
+    return [
+      { key: "all", label: "Semua" },
+      ...unique.map((cat) => ({
+        key: cat,
+        label: cat,
+      })),
+    ]
+  }, [data])
+
+  // filter search
   const filteredData = useMemo(() => {
-    return data.filter((item) =>
-      item.title.toLowerCase().includes(search.toLowerCase()),
-    )
-  }, [data, search])
+    let result = data
 
-  // 📦 GROUP BY MONTH
+    if (activeTab !== "all") {
+      result = result.filter((item) => item.category === activeTab)
+    }
+
+    if (search) {
+      result = result.filter((item) =>
+        (item.title ?? "").toLowerCase().includes(search.toLowerCase()),
+      )
+    }
+
+    return result
+  }, [data, search, activeTab])
+
+  // group by month
   const groupedData = useMemo(() => {
     const group = {}
 
     filteredData.forEach((item) => {
-      if (!group[item.month]) group[item.month] = []
-      group[item.month].push(item)
+      const month = item.month || "Unknown"
+
+      if (!group[month]) group[month] = []
+      group[month].push(item)
     })
 
     return Object.entries(group).map(([month, items]) => ({
@@ -41,26 +77,52 @@ export default function Publikasi() {
     }))
   }, [filteredData])
 
+  // toggle month accordion
   const toggleMonth = (month) => {
-    setOpenMonth(openMonth === month ? null : month)
+    setOpenMonth((prev) => (prev === month ? null : month))
   }
 
   return (
     <div className="p-6 max-w-5xl mx-auto">
-      {/* HEADER */}
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold">Publikasi</h1>
-        <p className="text-gray-500">Daftar publikasi riset & laporan</p>
+      {/* BANNER */}
+      <div className="flex justify-center mb-10">
+        <img
+          src={publicationBanner}
+          alt="Publication Banner"
+          className="max-h-[300px] object-contain"
+        />
+      </div>
+
+      {/* TABS */}
+      <div className="flex justify-center mb-6">
+        <div className="flex gap-2 border rounded-lg p-1 bg-gray-50 flex-wrap">
+          {tabs.map((tab) => (
+            <button
+              key={tab.key}
+              onClick={() => setActiveTab(tab.key)}
+              className={`px-4 py-2 text-sm rounded-md transition ${
+                activeTab === tab.key
+                  ? "bg-white shadow font-semibold"
+                  : "text-gray-500"
+              }`}>
+              {tab.label}
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* SEARCH */}
-      <input
-        type="text"
-        placeholder="Cari publikasi..."
-        className="w-full border px-4 py-2 rounded-lg mb-6"
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-      />
+      <div className="flex justify-center mb-10">
+        <div className="w-[420px]">
+          <input
+            type="text"
+            placeholder="Temukan dokumen"
+            className="w-full border px-4 py-2 rounded"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </div>
+      </div>
 
       {/* LOADING */}
       {loading && (
@@ -74,14 +136,21 @@ export default function Publikasi() {
         </div>
       )}
 
+      {/* EMPTY STATE */}
+      {!loading && groupedData.length === 0 && (
+        <div className="text-center text-gray-500">
+          Tidak ada data ditemukan
+        </div>
+      )}
+
       {/* ACCORDION */}
-      {!loading && (
+      {!loading && groupedData.length > 0 && (
         <div className="space-y-3">
           {groupedData.map((group) => (
             <div
               key={group.month}
               className="border rounded-lg overflow-hidden">
-              {/* HEADER ACCORDION */}
+              {/* HEADER */}
               <button
                 onClick={() => toggleMonth(group.month)}
                 className="w-full flex justify-between items-center px-4 py-3 bg-gray-50 hover:bg-gray-100">
