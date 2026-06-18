@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react"
 
 import { getIndicators } from "../services/indicatorService"
-import { getPublications } from "../services/publicationService"
+import { publicationService } from "../services/publicationService"
 
 const HomePage = () => {
   const [indicatorImage, setIndicatorImage] = useState("")
@@ -18,10 +18,10 @@ const HomePage = () => {
         setError(null)
 
         const indicatorData = await getIndicators()
-        const publicationData = await getPublications()
+        const data = await publicationService.getPublications()
 
-        setIndicatorImage(indicatorData.image)
-        setPublications(publicationData)
+        setIndicatorImage(indicatorData.image || "")
+        setPublications(data || [])
       } catch (err) {
         setError("Gagal memuat data")
       } finally {

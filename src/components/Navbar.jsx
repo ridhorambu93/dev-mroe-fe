@@ -1,6 +1,6 @@
 import { useAuth } from "../store/AuthContext"
 import { useState } from "react"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, Link } from "react-router-dom"
 
 export default function Navbar() {
   const { user, logout } = useAuth()
@@ -10,13 +10,34 @@ export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false)
 
   const menus = [
-    "Publikasi",
-    "Makroekonomi",
-    "Industry",
-    "Regional",
-    "Market Intelligence",
-    "Outlook Economic Forum",
-    "Daily Market Dashboard",
+    {
+      name: "Publikasi",
+      path: "/publikasi",
+    },
+    {
+      name: "Makroekonomi",
+      path: "/makroekonomi",
+    },
+    {
+      name: "Industry",
+      path: "/industry",
+    },
+    {
+      name: "Regional",
+      path: "/regional",
+    },
+    {
+      name: "Market Intelligence",
+      path: "/market-intelligence",
+    },
+    {
+      name: "Outlook Economic Forum",
+      path: "/outlook-economic-forum",
+    },
+    {
+      name: "Daily Market Dashboard",
+      path: "/daily-market-dashboard",
+    },
   ]
 
   const handleLogout = () => {
@@ -34,7 +55,9 @@ export default function Navbar() {
 
       <ul className="hidden lg:flex gap-8 text-sm">
         {menus.map((menu) => (
-          <li key={menu}>{menu}</li>
+          <li key={menu.path}>
+            <Link to={menu.path}>{menu.name}</Link>
+          </li>
         ))}
       </ul>
 

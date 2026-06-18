@@ -2,7 +2,12 @@ import { BrowserRouter, Routes, Route } from "react-router-dom"
 
 import LoginPage from "../pages/LoginPage"
 import HomePage from "../pages/HomePage"
-import AdminDashboard from "../pages/admin/AdminDashboard"
+import AdminDashboard from "../pages/Admin/AdminDashboard"
+
+import Publikasi from "../pages/Publikasi/Publikasi"
+import Makroekonomi from "../pages/MakroEkonomi/MakroEkonomi"
+import Industry from "../pages/Industri/Industri"
+import Regional from "../pages/Regional/Regional"
 
 import MainLayout from "../layouts/MainLayout"
 import AdminLayout from "../layouts/AdminLayout"
@@ -25,6 +30,48 @@ const AppRoutes = () => {
                 <HomePage />
               </MainLayout>
             </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/publikasi"
+          element={
+            <ProtectedRoute allowedRole="{['USER', 'ADMIN']}">
+              <MainLayout>
+                <Publikasi />
+              </MainLayout>
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/makroekonomi"
+          element={
+            <ProtectedRoute allowedRole="{['USER', 'ADMIN']}">
+              <MainLayout>
+                <Makroekonomi />
+              </MainLayout>
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/industry"
+          element={
+            <ProtectedRoute allowedRole="{['USER', 'ADMIN']}">
+              <MainLayout>
+                <Industry />
+              </MainLayout>
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/regional"
+          element={
+            <MainLayout>
+              <Regional />
+            </MainLayout>
           }
         />
 
