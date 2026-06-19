@@ -4,7 +4,7 @@ import LoginPage from "../pages/LoginPage"
 import HomePage from "../pages/HomePage"
 import AdminDashboard from "../pages/Admin/AdminDashboard"
 
-import Publikasi from "../pages/Publikasi/Publikasi"
+import Publikasi from "../pages/publikasi/Publikasi"
 import Makroekonomi from "../pages/MakroEkonomi/MakroEkonomi"
 import Industry from "../pages/Industri/Industri"
 import Regional from "../pages/Regional/Regional"
