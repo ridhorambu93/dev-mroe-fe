@@ -1,19 +1,19 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom"
 
-import LoginPage from "../pages/LoginPage"
-import HomePage from "../pages/HomePage"
-import AdminDashboard from "../pages/Admin/AdminDashboard"
-import AdminProfile from "../pages/Admin/AdminProfile"
+import LoginPage from "../pages/LoginPage.jsx"
+import HomePage from "../pages/HomePage.jsx"
+import AdminDashboard from "../pages/Admin/AdminDashboard.jsx"
+import AdminProfile from "../pages/Admin/AdminProfile.jsx"
 
 import Publikasi from "../pages/Publikasi/Publikasi"
-import Makroekonomi from "../pages/MakroEkonomi/MakroEkonomi"
-import Industry from "../pages/Industri/Industri"
-import Regional from "../pages/Regional/Regional"
+import Makroekonomi from "../pages/MakroEkonomi/MakroEkonomi.jsx"
+import Industry from "../pages/Industri/Industri.jsx"
+import Regional from "../pages/Regional/Regional.jsx"
 
-import MainLayout from "../layouts/MainLayout"
-import AdminLayout from "../layouts/AdminLayout"
+import MainLayout from "../layouts/MainLayout.jsx"
+import AdminLayout from "../layouts/AdminLayout.jsx"
 
-import ProtectedRoute from "./ProtectedRoute"
+import ProtectedRoute from "./ProtectedRoute.jsx"
 
 const AppRoutes = () => {
   return (
