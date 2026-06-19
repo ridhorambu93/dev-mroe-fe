@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import { useAuth } from "../store/AuthContext"
 import { useState, useRef, useEffect } from "react"
 import { useNavigate, Link } from "react-router-dom"

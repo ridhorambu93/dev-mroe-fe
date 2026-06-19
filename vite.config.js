@@ -3,7 +3,17 @@ import react from "@vitejs/plugin-react"
 
 export default defineConfig({
   plugins: [react()],
-  base: '/dev-mroe-fe/',
+  base: "/dev-mroe-fe/",
+  build: {
+    outDir: "dist",
+    sourcemap: false,
+    minify: "esbuild",
+    rollupOptions: {
+      output: {
+        manualChunks: undefined,
+      },
+    },
+  },
   server: {
     watch: {
       usePolling: true,
