@@ -1,6 +1,8 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { useSearchParams } from "react-router-dom"
 import { makroEkonomiService } from "../../services/makroEkonomiService"
+import makroEkonomiBanner from "../../assets/images/makro-ekonomi/banner-makro-ekonomi.png"
 
 export default function MakroEkonomi() {
   const [data, setData] = useState([])
@@ -67,9 +69,17 @@ export default function MakroEkonomi() {
 
   return (
     <div className="p-6 max-w-5xl mx-auto">
-      <h1 className="text-2xl font-semibold text-slate-800 text-center mb-8">
-        Makro Ekonomi
+      <h1 className="text-2xl font-semibold text-slate-800 text-[#0B4F8A] mb-8">
+        Data Indikator
       </h1>
+      {/* Banner */}
+            <div className="flex justify-center mb-10">
+              <img
+                src={makroEkonomiBanner}
+                alt="Publication Banner"
+                className="max-h-[300px] object-contain"
+              />
+            </div>
 
       {/* TABS */}
       <div className="flex justify-center mb-6">
