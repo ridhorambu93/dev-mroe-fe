@@ -3,48 +3,48 @@ export const publicationService = {
     const { search = "" } = params
 
     const data = [
-      // MAKRO EKONOMI dummy data
+      // makro ekonomi dummy data
       {
         id: 1,
         title: "Economic Outlook 2026",
-        category: "Makro Ekonomi",
+        category: "Daily Economic",
         author: "Research Team",
         month: "Januari 2026",
       },
       {
         id: 2,
         title: "Inflation Trend Analysis",
-        category: "Makro Ekonomi",
+        category: "Daily Economic",
         author: "Research Team",
         month: "Januari 2026",
       },
       {
         id: 3,
         title: "Global Market Projection",
-        category: "Makro Ekonomi",
+        category: "Daily Economic",
         author: "Research Team",
         month: "Februari 2026",
       },
 
-      // BJB BUSINESS INSIGHT dummy data
+      // business insight dummy data
       {
         id: 4,
         title: "Banking Industry Report",
-        category: "Perbankan",
+        category: "Daily Economic",
         author: "Research Team",
         month: "Januari 2026",
       },
       {
         id: 5,
         title: "Digital Banking Growth Study",
-        category: "Perbankan",
+        category: "Daily Economic",
         author: "Research Team",
         month: "Februari 2026",
       },
       {
         id: 6,
         title: "Credit Risk Evaluation 2026",
-        category: "Perbankan",
+        category: "Daily Economic",
         author: "Research Team",
         month: "Februari 2026",
       },
@@ -76,6 +76,27 @@ export const publicationService = {
         category: "Lainnya",
         author: "Research Team",
         month: "Februari 2026",
+      },
+      {
+        id: 11,
+        title: "Annual Review 2025",
+        category: "Lainnya",
+        author: "Research Team",
+        month: "Januari 2025",
+      },
+      {
+        id: 12,
+        title: "Regional Economic Highlights",
+        category: "Lainnya",
+        author: "Research Team",
+        month: "Februari 2025",
+      },
+      {
+        id: 13,
+        title: "Financial Literacy Report",
+        category: "Lainnya",
+        author: "Research Team",
+        month: "Maret 2025",
       },
     ]
 
