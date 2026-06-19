@@ -17,7 +17,8 @@ import ProtectedRoute from "./ProtectedRoute.jsx"
 
 const AppRoutes = () => {
   return (
-    <BrowserRouter>
+    // <BrowserRouter>
+        <BrowserRouter basename="/dev-mroe-fe">
       <Routes>
         {/* LOGIN */}
         <Route path="/" element={<LoginPage />} />
