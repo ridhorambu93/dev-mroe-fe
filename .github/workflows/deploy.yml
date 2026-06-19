@@ -2,7 +2,7 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [ "main", "master" ] # Trigger berjalan saat push ke main atau master
+    branches: [ "main", "development" ] # Trigger berjalan saat push ke main atau master
   workflow_dispatch: # Mengizinkan tombol klik manual dari web GitHub
 
 # Mengatur izin token GitHub khusus untuk pembuatan Pages
