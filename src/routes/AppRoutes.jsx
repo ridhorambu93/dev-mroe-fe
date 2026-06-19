@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom"
 import LoginPage from "../pages/LoginPage"
 import HomePage from "../pages/HomePage"
 import AdminDashboard from "../pages/Admin/AdminDashboard"
+import AdminProfile from "../pages/Admin/AdminProfile"
 
 import Publikasi from "../pages/publikasi/Publikasi"
 import Makroekonomi from "../pages/MakroEkonomi/MakroEkonomi"
@@ -84,6 +85,7 @@ const AppRoutes = () => {
             </ProtectedRoute>
           }>
           <Route index element={<AdminDashboard />} />
+          <Route path="profile" element={<AdminProfile />} />
         </Route>
       </Routes>
     </BrowserRouter>

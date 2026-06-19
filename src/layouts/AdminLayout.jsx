@@ -6,6 +6,7 @@ const sidebarMenus = [
   { label: "Publikasi", path: "/admin/publikasi", icon: "📄" },
   { label: "Indikator", path: "/admin/indikator", icon: "📈" },
   { label: "Users", path: "/admin/users", icon: "👥" },
+  { label: "Profil", path: "/admin/profile", icon: "👤" },
   { label: "Settings", path: "/admin/settings", icon: "⚙️" },
 ]
 
@@ -60,12 +61,20 @@ const AdminLayout = () => {
               <p className="text-[10px] text-slate-400">{user?.role}</p>
             </div>
           </div>
-          <button
-            onClick={handleLogout}
-            className="mt-3 w-full text-left text-xs text-red-400 hover:text-red-300"
-          >
-            ← Logout
-          </button>
+          <div className="mt-3 space-y-1">
+            <button
+              onClick={() => navigate("/home")}
+              className="w-full text-left text-xs text-slate-300 hover:text-white"
+            >
+              🏠 Ke Beranda
+            </button>
+            <button
+              onClick={handleLogout}
+              className="w-full text-left text-xs text-red-400 hover:text-red-300"
+            >
+              ← Logout
+            </button>
+          </div>
         </div>
       </aside>
 
