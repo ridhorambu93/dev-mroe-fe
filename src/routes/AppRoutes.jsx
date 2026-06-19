@@ -80,9 +80,7 @@ const AppRoutes = () => {
           path="/admin"
           element={
             <ProtectedRoute allowedRole="{['ADMIN']}">
-              <MainLayout>
-                <AdminLayout />
-              </MainLayout>
+              <AdminLayout />
             </ProtectedRoute>
           }>
           <Route index element={<AdminDashboard />} />
