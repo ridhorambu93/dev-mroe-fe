@@ -5,7 +5,7 @@ import HomePage from "../pages/HomePage"
 import AdminDashboard from "../pages/Admin/AdminDashboard"
 import AdminProfile from "../pages/Admin/AdminProfile"
 
-import Publikasi from "../pages/publikasi/Publikasi"
+import Publikasi from "../pages/Publikasi/Publikasi"
 import Makroekonomi from "../pages/MakroEkonomi/MakroEkonomi"
 import Industry from "../pages/Industri/Industri"
 import Regional from "../pages/Regional/Regional"
