@@ -1,6 +1,43 @@
+/* eslint-disable no-unused-vars */
 import { useAuth } from "../store/AuthContext"
 import { useState } from "react"
 import { useNavigate, Link } from "react-router-dom"
+import roeLogo from "../assets/images/logo-home-roe.png"
+import bjbLogo from "../assets/images/bjb-logo.png"
+
+const menus = [
+  {
+    label: "Publikasi",
+    path: "/publikasi",
+    children: [
+      { label: "Daily Economic", tab: "Daily Economic" },
+      { label: "bjb Business Insight", tab: "bjb Business Insight" },
+      { label: "Lainnya", tab: "Lainnya" },
+    ],
+  },
+  {
+    label: "Makro Ekonomi",
+    path: "/makroekonomi",
+    children: [
+      { label: "Makro Brief", tab: "Makro Brief" },
+      { label: "Ekonomi Makro", tab: "Ekonomi Makro" },
+    ],
+  },
+  {
+    label: "Industri",
+    path: "/industry",
+    children: [
+      { label: "Positioning", tab: "Positioning" },
+      { label: "Market Share", tab: "Market Share" },
+      { label: "Rasio Industri", tab: "Rasio Industri" },
+      { label: "Kajian NPL", tab: "Kajian NPL" },
+    ],
+  },
+  { label: "Regional", path: "/regional" },
+  { label: "Market Intelligence", path: "/market-intelligence" },
+  { label: "Outlook Economic Forum", path: "/outlook-economic-forum" },
+  { label: "Daily Market Dashboard", path: "/daily-market-dashboard" },
+]
 
 export default function Navbar() {
   const { user, logout } = useAuth()
