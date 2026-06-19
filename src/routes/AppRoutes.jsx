@@ -2,8 +2,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom"
 
 import LoginPage from "../pages/LoginPage.jsx"
 import HomePage from "../pages/HomePage.jsx"
-import AdminDashboard from "../pages/Admin/AdminDashboard.jsx"
-import AdminProfile from "../pages/Admin/AdminProfile.jsx"
+import AdminDashboard from "../pages/admin/AdminDashboard.jsx"
+import AdminProfile from "../pages/admin/AdminProfile.jsx"
 
 import Publikasi from "../pages/Publikasi/Publikasi"
 import Makroekonomi from "../pages/MakroEkonomi/MakroEkonomi.jsx"
