@@ -1,6 +1,8 @@
 import { useAuth } from "../store/AuthContext"
 import { useState, useRef, useEffect } from "react"
 import { useNavigate, Link } from "react-router-dom"
+import roeLogo from "../assets/images/logo-home-roe.png"
+import bjbLogo from "../assets/images/bjb-logo.png"
 
 const menus = [
   {
@@ -59,21 +61,32 @@ export default function Navbar() {
 
   return (
     <nav className="bg-[#00549F] text-white">
-      <div className="px-6 h-16 flex items-center justify-between">
-        {/* BRAND */}
-        <Link to="/home" className="shrink-0">
-          <p className="text-[10px] leading-tight">Research and Office of Economist</p>
-          <h2 className="font-bold text-lg leading-tight">bank bjb</h2>
+      <div className="px-6 py-3 flex items-center justify-between">
+        {/* Logo Brand */}
+        <Link to="/home" className="shrink-0 flex items-center">
+          <img
+            src={roeLogo}
+            alt="Research Office Economist"
+            className="h-10 object-contain"
+          />
+          <p className="text-[10px] leading-tight">
+            Research and <br /> 
+            Office of <br />
+            Economist
+          </p>
+          <div className="border-l border-white pl-1 h-10 ml-1"></div>
+          <img
+            src={bjbLogo}
+            alt="Bogoank BJB L"
+            className="h-10 object-contain"
+          />
         </Link>
 
         {/* DESKTOP MENU */}
         <ul className="hidden lg:flex items-center gap-6 text-sm">
           {menus.map((menu) => (
             <li key={menu.label} className="relative group">
-              <Link
-                to={menu.path}
-                className="hover:text-yellow-300 transition"
-              >
+              <Link to={menu.path} className="hover:text-yellow-300 transition">
                 {menu.label}
                 {menu.children && <span className="ml-1 text-[10px]">▼</span>}
               </Link>
@@ -86,8 +99,7 @@ export default function Navbar() {
                       <Link
                         key={child.tab}
                         to={`${menu.path}?tab=${encodeURIComponent(child.tab)}`}
-                        className="block px-4 py-3 text-sm hover:bg-gray-100 transition"
-                      >
+                        className="block px-4 py-3 text-sm hover:bg-gray-100 transition">
                         {child.label}
                       </Link>
                     ))}
@@ -111,8 +123,7 @@ export default function Navbar() {
               <div className="relative">
                 <button
                   className="bg-yellow-400 text-black px-3 py-1.5 rounded text-sm font-medium"
-                  onClick={() => setProfileOpen(!profileOpen)}
-                >
+                  onClick={() => setProfileOpen(!profileOpen)}>
                   Profil ▼
                 </button>
 
@@ -120,16 +131,20 @@ export default function Navbar() {
                   <div className="absolute right-0 mt-2 w-44 bg-white text-slate-800 rounded-lg shadow-lg overflow-hidden z-50">
                     <button
                       className="block w-full text-left px-4 py-3 text-sm hover:bg-gray-100"
-                      onClick={() => { navigate("/home"); setProfileOpen(false) }}
-                    >
+                      onClick={() => {
+                        navigate("/home")
+                        setProfileOpen(false)
+                      }}>
                       Beranda
                     </button>
 
                     {user.role === "ADMIN" && (
                       <button
                         className="block w-full text-left px-4 py-3 text-sm hover:bg-gray-100"
-                        onClick={() => { navigate("/admin"); setProfileOpen(false) }}
-                      >
+                        onClick={() => {
+                          navigate("/admin")
+                          setProfileOpen(false)
+                        }}>
                         Dashboard Admin
                       </button>
                     )}
@@ -138,8 +153,7 @@ export default function Navbar() {
 
                     <button
                       className="block w-full text-left px-4 py-3 text-sm text-red-600 hover:bg-gray-100"
-                      onClick={handleLogout}
-                    >
+                      onClick={handleLogout}>
                       Logout
                     </button>
                   </div>
@@ -152,11 +166,16 @@ export default function Navbar() {
           <button
             className="lg:hidden flex flex-col gap-1.5 p-2"
             onClick={() => setMobileOpen(!mobileOpen)}
-            aria-label="Toggle menu"
-          >
-            <span className={`block w-6 h-0.5 bg-white transition-transform ${mobileOpen ? "rotate-45 translate-y-2" : ""}`} />
-            <span className={`block w-6 h-0.5 bg-white transition-opacity ${mobileOpen ? "opacity-0" : ""}`} />
-            <span className={`block w-6 h-0.5 bg-white transition-transform ${mobileOpen ? "-rotate-45 -translate-y-2" : ""}`} />
+            aria-label="Toggle menu">
+            <span
+              className={`block w-6 h-0.5 bg-white transition-transform ${mobileOpen ? "rotate-45 translate-y-2" : ""}`}
+            />
+            <span
+              className={`block w-6 h-0.5 bg-white transition-opacity ${mobileOpen ? "opacity-0" : ""}`}
+            />
+            <span
+              className={`block w-6 h-0.5 bg-white transition-transform ${mobileOpen ? "-rotate-45 -translate-y-2" : ""}`}
+            />
           </button>
         </div>
       </div>
@@ -171,8 +190,7 @@ export default function Navbar() {
                   <>
                     <button
                       className="w-full flex justify-between items-center py-2 text-sm hover:text-yellow-300"
-                      onClick={() => toggleMobileSubmenu(menu.label)}
-                    >
+                      onClick={() => toggleMobileSubmenu(menu.label)}>
                       {menu.label}
                       <span className="text-[10px]">
                         {mobileSubmenu === menu.label ? "▲" : "▼"}
@@ -186,8 +204,7 @@ export default function Navbar() {
                             <Link
                               to={`${menu.path}?tab=${encodeURIComponent(child.tab)}`}
                               className="block py-1.5 text-sm text-blue-200 hover:text-yellow-300"
-                              onClick={() => setMobileOpen(false)}
-                            >
+                              onClick={() => setMobileOpen(false)}>
                               {child.label}
                             </Link>
                           </li>
@@ -199,8 +216,7 @@ export default function Navbar() {
                   <Link
                     to={menu.path}
                     className="block py-2 text-sm hover:text-yellow-300"
-                    onClick={() => setMobileOpen(false)}
-                  >
+                    onClick={() => setMobileOpen(false)}>
                     {menu.label}
                   </Link>
                 )}
@@ -217,8 +233,7 @@ export default function Navbar() {
               </div>
               <button
                 className="text-sm text-red-300 hover:text-red-100"
-                onClick={handleLogout}
-              >
+                onClick={handleLogout}>
                 Logout
               </button>
             </div>
