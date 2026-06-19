@@ -1,11 +1,13 @@
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { publicationService } from "../../services/publicationService"
+import { useSearchParams } from "react-router-dom"
 import publicationBanner from "../../assets/images/publikasi/publication-banner.png"
 
 export default function Publikasi() {
-  const [data, setData] = useState([])
   // state
-  const [activeTab, setActiveTab] = useState("all")
+  const [data, setData] = useState([])
+  const [searchParams, setSearchParams] = useSearchParams()
+  const activeTab = searchParams.get("tab") || "all"
   const [search, setSearch] = useState("")
   const [openMonth, setOpenMonth] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -23,7 +25,6 @@ export default function Publikasi() {
       setLoading(false)
     }
   }, [])
-
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchData()
@@ -84,7 +85,10 @@ export default function Publikasi() {
 
   return (
     <div className="p-6 max-w-5xl mx-auto">
-      {/* BANNER */}
+      <h1 className="text-2xl font-semibold text-slate-800 text-brand-blue mb-8">
+        Data Indikator
+      </h1>
+      {/* Banner */}
       <div className="flex justify-center mb-10">
         <img
           src={publicationBanner}
@@ -99,11 +103,15 @@ export default function Publikasi() {
           {tabs.map((tab) => (
             <button
               key={tab.key}
-              onClick={() => setActiveTab(tab.key)}
+              onClick={() =>
+                setSearchParams({
+                  tab: tab.key,
+                })
+              }
               className={`px-4 py-2 text-sm rounded-md transition ${
                 activeTab === tab.key
-                  ? "bg-white shadow font-semibold"
-                  : "text-gray-500"
+                  ? "bg-yellow-400 text-dark font-semibold"
+                  : "text-gray-500 hover:bg-gray-100"
               }`}>
               {tab.label}
             </button>
