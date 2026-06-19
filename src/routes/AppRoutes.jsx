@@ -5,7 +5,7 @@ import HomePage from "../pages/HomePage.jsx"
 import AdminDashboard from "../pages/admin/AdminDashboard.jsx"
 import AdminProfile from "../pages/admin/AdminProfile.jsx"
 
-import Publikasi from "../pages/Publikasi/Publikasi"
+import Publikasi from "../pages/publikasi/Publikasi"
 import Makroekonomi from "../pages/MakroEkonomi/MakroEkonomi.jsx"
 import Industry from "../pages/Industri/Industri.jsx"
 import Regional from "../pages/Regional/Regional.jsx"
