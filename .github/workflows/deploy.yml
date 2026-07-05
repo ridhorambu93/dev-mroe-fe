@@ -31,17 +31,20 @@ jobs:
         with:
           node-version: 20
           cache: 'npm'
+          cache-dependency-path: bjb-mroe-fe/package-lock.json
 
       - name: Install dependencies
         run: npm ci
+        working-directory: bjb-mroe-fe
 
       - name: Build Website
         run: npm run build
+        working-directory: bjb-mroe-fe
 
       - name: Upload Artifacts
         uses: actions/upload-pages-artifact@v3
         with:
-          path: dist # Folder output bawaan dari Vite build
+          path: bjb-mroe-fe/dist
 
       - name: Deploy to GitHub Pages
         id: deployment
