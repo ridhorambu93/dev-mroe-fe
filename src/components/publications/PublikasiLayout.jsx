@@ -3,6 +3,7 @@ import { useSearchParams } from "react-router-dom"
 import { FaFilePdf } from "react-icons/fa"
 import { ChevronUp, ChevronDown } from "lucide-react"
 
+
 export default function PublikasiLayout({ title, banner, data = [], loading }) {
   const [searchParams, setSearchParams] = useSearchParams()
   const activeTab = searchParams.get("tab") || null
