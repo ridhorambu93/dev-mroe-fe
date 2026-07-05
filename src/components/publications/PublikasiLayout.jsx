@@ -49,8 +49,8 @@ export default function PublikasiLayout({ title, banner, data = [], loading }) {
   const toggleMonth = (key) => setOpenMonths((prev) => ({ ...prev, [key]: !prev[key] }))
 
   return (
-    <div className="p-6 max-w-5xl mx-auto">
-      <h1 className="text-2xl font-semibold text-slate-800 mb-8">{title}</h1>
+    <div className="p-4 md:p-6 max-w-5xl mx-auto">
+      <h1 className="text-xl md:text-2xl font-semibold text-slate-800 mb-8">{title}</h1>
 
       {banner && (
         <div className="flex justify-center mb-10">
@@ -79,11 +79,11 @@ export default function PublikasiLayout({ title, banner, data = [], loading }) {
       )}
 
       {/* SEARCH */}
-      <div className="flex justify-center mb-10">
+      <div className="w-full px-4 py-2 rounded">
         <input
           type="text"
           placeholder="Temukan dokumen"
-          className="w-[420px] border px-4 py-2 rounded"
+          className="w-full border px-4 py-2 rounded"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
@@ -132,7 +132,7 @@ export default function PublikasiLayout({ title, banner, data = [], loading }) {
                         </button>
 
                         {openMonths[key] && (
-                          <div className="p-4 grid grid-cols-4 gap-3">
+                          <div className="p-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
                             {items.map((item) => (
                               <div
                                 key={item.id}

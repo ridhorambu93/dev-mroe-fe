@@ -50,10 +50,10 @@ const HomePage = () => {
   }
 
   return (
-    <div className="max-w-6xl mx-auto px-6 py-10">
+    <div className="max-w-6xl mx-auto px-4 md:px-6 py-10">
       {/* ================= WELCOME ================= */}
       <section className="text-center mb-10">
-        <h1 className="text-4xl font-medium text-slate-800">
+        <h1 className="text-2xl md:text-4xl font-medium text-slate-800">
           Selamat datang di situs Research and Office of Economist bank bjb
         </h1>
       </section>
@@ -75,7 +75,7 @@ const HomePage = () => {
 
       {/* ================= DOCUMENT ================= */}
       <section>
-        <div className="flex justify-between items-center mb-3">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-3">
           <h2 className="font-semibold text-[#00549F]">
             Dokumen Upload Terbaru
           </h2>
@@ -83,7 +83,7 @@ const HomePage = () => {
           <input
             type="text"
             placeholder="Temukan dokumen"
-            className="border rounded px-4 py-2 w-80"
+            className="border rounded px-4 py-2 w-full sm:w-80"
           />
         </div>
 
@@ -95,7 +95,7 @@ const HomePage = () => {
             Tidak ada dokumen tersedia
           </p>
         ) : (
-          <div className="grid grid-cols-3 gap-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {publications.map((item) => (
               <div key={item.id} className="border rounded-md bg-white p-4">
                 <div className="flex gap-4">

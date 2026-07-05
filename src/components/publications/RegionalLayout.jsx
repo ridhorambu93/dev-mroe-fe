@@ -43,8 +43,8 @@ export default function RegionalLayout({ title, banner, data = [], loading }) {
   const toggleQuarter = (key) => setOpenQuarters((prev) => ({ ...prev, [key]: !prev[key] }))
 
   return (
-    <div className="p-6 max-w-5xl mx-auto">
-      <h1 className="text-2xl font-semibold text-slate-800 mb-8">{title}</h1>
+    <div className="p-4 md:p-6 max-w-5xl mx-auto">
+      <h1 className="text-xl md:text-2xl font-semibold text-slate-800 mb-8">{title}</h1>
 
       {banner && (
         <div className="flex justify-center mb-10">
@@ -124,7 +124,7 @@ export default function RegionalLayout({ title, banner, data = [], loading }) {
                         {openQuarters[key] && (
                           <div className="px-5 py-3 space-y-3">
                             {/* TABLE HEADER */}
-                            <div className="grid grid-cols-[auto_1fr_1fr_1fr_1fr_auto] gap-4 text-xs text-gray-400 font-medium px-2">
+                            <div className="hidden md:grid grid-cols-[auto_1fr_1fr_1fr_1fr_auto] gap-4 text-xs text-gray-400 font-medium px-2">
                               <span className="w-8" />
                               <span>Judul kajian</span>
                               <span>Deskripsi</span>
@@ -136,13 +136,13 @@ export default function RegionalLayout({ title, banner, data = [], loading }) {
                             {items.map((item) => (
                               <div
                                 key={item.id}
-                                className="grid grid-cols-[auto_1fr_1fr_1fr_1fr_auto] gap-4 items-center border rounded-lg px-4 py-3 bg-white hover:bg-gray-50">
+                                className="flex flex-col md:grid md:grid-cols-[auto_1fr_1fr_1fr_1fr_auto] gap-2 md:gap-4 items-start md:items-center border rounded-lg px-4 py-3 bg-white hover:bg-gray-50">
                                 <FaFilePdf className="text-red-500 text-2xl shrink-0" />
                                 <span className="text-sm font-medium text-slate-700">{item.title}</span>
                                 <span className="text-sm text-gray-500">{item.description}</span>
                                 <span className="text-sm text-gray-500">{item.publishDate}</span>
                                 <span className="text-sm text-gray-500">{item.author}</span>
-                                <div className="flex items-center gap-0 shrink-0">
+                                <div className="flex items-center shrink-0">
                                   <a
                                     href={item.file || "#"}
                                     className="text-sm font-semibold text-[#3d5a80] hover:underline px-2"
