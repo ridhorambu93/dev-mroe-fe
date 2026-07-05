@@ -71,9 +71,11 @@ const AppRoutes = () => {
         <Route
           path="/regional"
           element={
-            <MainLayout>
-              <Regional />
-            </MainLayout>
+            <ProtectedRoute allowedRole="{['USER', 'ADMIN']}">
+              <MainLayout>
+                <Regional />
+              </MainLayout>
+            </ProtectedRoute>
           }
         />
 

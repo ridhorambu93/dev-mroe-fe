@@ -32,7 +32,11 @@ const menus = [
       { label: "Kajian NPL", tab: "Kajian NPL" },
     ],
   },
-  { label: "Regional", path: "/regional" },
+  { label: "Regional", path: "/regional", children: [
+      { label: "Mapping Ekonomi", tab: "Mapping Ekonomi" },
+      { label: "Pemetaan Sektoral Ekonomi & Kredit Perbankan", tab: "Pemetaan Sektoral Ekonomi & Kredit Perbankan" },
+    ],
+  },
   { label: "Market Intelligence", path: "/market-intelligence" },
   { label: "Outlook Economic Forum", path: "/outlook-economic-forum" },
   { label: "Daily Market Dashboard", path: "/daily-market-dashboard" },
