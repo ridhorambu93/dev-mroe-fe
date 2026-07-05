@@ -17,7 +17,7 @@ const HomePage = () => {
         setError(null)
 
         const indicatorData = await getIndicators()
-        const data = await publicationService.getPublications()
+        const data = await publicationService.getAll()
 
         setIndicatorImage("")
         setPublications(data || [])
