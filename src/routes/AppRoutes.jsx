@@ -18,7 +18,7 @@ import ProtectedRoute from "./ProtectedRoute.jsx"
 const AppRoutes = () => {
   return (
     // <BrowserRouter>
-    <BrowserRouter basename={import.meta.env.VITE_BASE_PATH || "/"}>
+    <BrowserRouter basename="/dev-mroe-fe">
       <Routes>
         {/* LOGIN */}
         <Route path="/" element={<LoginPage />} />
