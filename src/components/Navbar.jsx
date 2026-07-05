@@ -175,6 +175,40 @@ export default function Navbar() {
             </div>
           )}
 
+          {/* PROFILE BUTTON (Mobile) */}
+          {user && (
+            <div className="lg:hidden relative" ref={profileRef}>
+              <button
+                className="bg-yellow-400 text-black px-3 py-1.5 rounded text-sm font-medium"
+                onClick={() => setProfileOpen(!profileOpen)}>
+                Profil ▼
+              </button>
+
+              {profileOpen && (
+                <div className="absolute right-0 mt-2 w-44 bg-white text-slate-800 rounded-lg shadow-lg overflow-hidden z-50">
+                  <button
+                    className="block w-full text-left px-4 py-3 text-sm hover:bg-gray-100"
+                    onClick={() => { navigate("/home"); setProfileOpen(false) }}>
+                    Beranda
+                  </button>
+                  {user.role === "ADMIN" && (
+                    <button
+                      className="block w-full text-left px-4 py-3 text-sm hover:bg-gray-100"
+                      onClick={() => { navigate("/admin"); setProfileOpen(false) }}>
+                      Dashboard Admin
+                    </button>
+                  )}
+                  <div className="border-t" />
+                  <button
+                    className="block w-full text-left px-4 py-3 text-sm text-red-600 hover:bg-gray-100"
+                    onClick={handleLogout}>
+                    Logout
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
+
           {/* HAMBURGER (Mobile) */}
           <button
             className="lg:hidden flex flex-col gap-1.5 p-2"
