@@ -2,6 +2,7 @@ import { useMemo, useState } from "react"
 import { useSearchParams } from "react-router-dom"
 import { FaFilePdf } from "react-icons/fa"
 import { ChevronUp, ChevronDown } from "lucide-react"
+import { slugify } from "../../utils/slugify"
 
 /**
  * PublikasiLayout
@@ -20,33 +21,45 @@ export default function PublikasiLayout({ title, banner, categories, gridCategor
 
   const tabs = useMemo(() => {
     if (categories && categories.length > 0) {
-      return categories.map((cat) => ({ key: cat, label: cat }))
+      return categories.map((cat) => ({ key: slugify(cat), label: cat }))
     }
     return [...new Set(data.map((item) => item.category))].map((cat) => ({
-      key: cat,
+      key: slugify(cat),
       label: cat,
     }))
   }, [categories, data])
+
+  // Map slug param back to category name
+  const effectiveCategory = useMemo(() => {
+    if (activeTab) {
+      const found = tabs.find((t) => t.key === activeTab)
+      return found ? found.label : null
+    }
+    return tabs.length > 0 ? tabs[0].label : null
+  }, [activeTab, tabs])
 
   const effectiveTab = activeTab || (tabs.length > 0 ? tabs[0].key : null)
 
   // Determine layout: grid or list
   const isGridLayout = useMemo(() => {
     if (gridCategories && gridCategories.length > 0) {
-      return gridCategories.includes(effectiveTab)
+      return gridCategories.includes(effectiveCategory)
     }
-    // Default: tab pertama pakai grid, sisanya list
     return tabs.length > 0 && effectiveTab === tabs[0].key
-  }, [effectiveTab, gridCategories, tabs])
+  }, [effectiveCategory, effectiveTab, gridCategories, tabs])
 
   const filteredData = useMemo(() => {
-    let result = effectiveTab ? data.filter((item) => item.category === effectiveTab) : data
-    if (search)
+    let result = effectiveCategory ? data.filter((item) => item.category === effectiveCategory) : data
+    if (search) {
+      const q = search.toLowerCase()
       result = result.filter((item) =>
-        (item.title ?? "").toLowerCase().includes(search.toLowerCase()),
+        (item.title ?? "").toLowerCase().includes(q) ||
+        (item.description ?? "").toLowerCase().includes(q) ||
+        (item.author ?? "").toLowerCase().includes(q)
       )
+    }
     return result
-  }, [data, effectiveTab, search])
+  }, [data, effectiveCategory, search])
 
   const groupedByYear = useMemo(() => {
     const yearMap = {}

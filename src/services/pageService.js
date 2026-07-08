@@ -8,6 +8,8 @@ const SEED = [
     banner: "/images/banner-publikasi.png",
     categories: ["Daily Economic", "bjb Business Insight", "Lainnya"],
     gridCategories: ["Daily Economic"],
+    layout: "default",
+    gallery: [],
   },
   {
     id: 2,
@@ -16,6 +18,8 @@ const SEED = [
     banner: "",
     categories: ["Makro Brief", "Ekonomi Makro"],
     gridCategories: ["Makro Brief", "Ekonomi Makro"],
+    layout: "default",
+    gallery: [],
   },
   {
     id: 3,
@@ -24,6 +28,8 @@ const SEED = [
     banner: "",
     categories: ["Positioning", "Market Share", "Rasio Industri", "Kajian NPL"],
     gridCategories: ["Positioning", "Market Share", "Rasio Industri", "Kajian NPL"],
+    layout: "default",
+    gallery: [],
   },
   {
     id: 4,
@@ -32,6 +38,8 @@ const SEED = [
     banner: "",
     categories: ["Mapping Ekonomi", "Pemetaan Sektoral Ekonomi & Kredit Perbankan"],
     gridCategories: [],
+    layout: "regional",
+    gallery: [],
   },
   {
     id: 5,
@@ -40,6 +48,28 @@ const SEED = [
     banner: "",
     categories: ["Daily Market"],
     gridCategories: ["Daily Market"],
+    layout: "default",
+    gallery: [],
+  },
+  {
+    id: 6,
+    name: "Outlook Economic Forum",
+    slug: "/outlook-economic-forum",
+    banner: "",
+    categories: ["Pembicara 1", "Pembicara 2", "Pembicara 3"],
+    gridCategories: [],
+    layout: "forum",
+    gallery: [],
+  },
+  {
+    id: 7,
+    name: "Market Intelligence",
+    slug: "/market-intelligence",
+    banner: "",
+    categories: ["Market Intelligence"],
+    gridCategories: ["Market Intelligence"],
+    layout: "default",
+    gallery: [],
   },
 ]
 

@@ -2,29 +2,45 @@ import { useMemo, useState } from "react"
 import { useSearchParams } from "react-router-dom"
 import { FaFilePdf } from "react-icons/fa"
 import { ChevronUp, ChevronDown } from "lucide-react"
+import { slugify } from "../../utils/slugify"
 
 const QUARTER_ORDER = ["Triwulan I", "Triwulan II", "Triwulan III", "Triwulan IV"]
 
 export default function RegionalLayout({ title, banner, categories, data = [], loading }) {
   const [searchParams, setSearchParams] = useSearchParams()
   const activeTab = searchParams.get("tab") || null
+  const [search, setSearch] = useState("")
   const [openYears, setOpenYears] = useState({})
   const [openQuarters, setOpenQuarters] = useState({})
 
   const tabs = useMemo(() => {
     if (categories && categories.length > 0) {
-      return categories.map((cat) => ({ key: cat, label: cat }))
+      return categories.map((cat) => ({ key: slugify(cat), label: cat }))
     }
-    return [...new Set(data.map((item) => item.category))].map((cat) => ({ key: cat, label: cat }))
+    return [...new Set(data.map((item) => item.category))].map((cat) => ({ key: slugify(cat), label: cat }))
   }, [categories, data])
 
-  // Default ke tab pertama jika belum ada tab dipilih
   const effectiveTab = activeTab || (tabs.length > 0 ? tabs[0].key : null)
 
-  const filteredData = useMemo(
-    () => (effectiveTab ? data.filter((item) => item.category === effectiveTab) : data),
-    [data, effectiveTab],
-  )
+  const effectiveCategory = useMemo(() => {
+    if (activeTab) {
+      const found = tabs.find((t) => t.key === activeTab)
+      return found ? found.label : null
+    }
+    return tabs.length > 0 ? tabs[0].label : null
+  }, [activeTab, tabs])
+
+  const filteredData = useMemo(() => {
+    let result = effectiveCategory ? data.filter((item) => item.category === effectiveCategory) : data
+    if (search) {
+      const q = search.toLowerCase()
+      result = result.filter((item) =>
+        (item.title ?? "").toLowerCase().includes(q) ||
+        (item.description ?? "").toLowerCase().includes(q)
+      )
+    }
+    return result
+  }, [data, effectiveTab, search])
 
   const groupedByYear = useMemo(() => {
     const yearMap = {}
@@ -76,6 +92,17 @@ export default function RegionalLayout({ title, banner, categories, data = [], l
           </div>
         </div>
       )}
+
+      {/* SEARCH */}
+      <div className="w-full mb-6">
+        <input
+          type="text"
+          placeholder="Temukan dokumen"
+          className="w-full border px-4 py-2 rounded"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
+      </div>
 
       {/* LOADING */}
       {loading && (
