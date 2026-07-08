@@ -1,10 +1,9 @@
-import { Outlet, NavLink, useNavigate } from "react-router-dom"
+import { Outlet, NavLink, useNavigate, useLocation } from "react-router-dom"
 import { useAuth } from "../store/AuthContext"
 
 const sidebarMenus = [
   { label: "Dashboard", path: "/admin", icon: "📊" },
-  { label: "Publikasi", path: "/admin/publikasi", icon: "📄" },
-  { label: "Indikator", path: "/admin/indikator", icon: "📈" },
+  { label: "Kelola Konten", path: "/admin/publikasi", icon: "📄" },
   { label: "Users", path: "/admin/users", icon: "👥" },
   { label: "Profil", path: "/admin/profile", icon: "👤" },
   { label: "Settings", path: "/admin/settings", icon: "⚙️" },
@@ -13,6 +12,13 @@ const sidebarMenus = [
 const AdminLayout = () => {
   const { user, logout } = useAuth()
   const navigate = useNavigate()
+  const location = useLocation()
+
+  const activeMenu =
+    [...sidebarMenus]
+      .sort((a, b) => b.path.length - a.path.length)
+      .find((m) => location.pathname === m.path || location.pathname.startsWith(`${m.path}/`)) ||
+    sidebarMenus[0]
 
   const handleLogout = () => {
     logout()
@@ -82,7 +88,7 @@ const AdminLayout = () => {
       <main className="flex-1 bg-gray-50 overflow-auto">
         {/* Top Bar */}
         <header className="bg-white border-b px-6 py-4 flex items-center justify-between">
-          <h1 className="text-lg font-semibold text-slate-800">Admin Dashboard</h1>
+          <h1 className="text-lg font-semibold text-slate-800">{activeMenu.label}</h1>
           <div className="text-sm text-slate-500">
             {new Date().toLocaleDateString("id-ID", {
               weekday: "long",

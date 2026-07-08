@@ -25,6 +25,8 @@ export function usePublications(serviceFn) {
   }, [serviceFn])
 
   useEffect(() => {
+    // Fetch data awal saat mount — perilaku yang memang diinginkan.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchData()
   }, [fetchData])
 

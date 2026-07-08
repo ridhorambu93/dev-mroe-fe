@@ -5,20 +5,25 @@ import { ChevronUp, ChevronDown } from "lucide-react"
 
 const QUARTER_ORDER = ["Triwulan I", "Triwulan II", "Triwulan III", "Triwulan IV"]
 
-export default function RegionalLayout({ title, banner, data = [], loading }) {
+export default function RegionalLayout({ title, banner, categories, data = [], loading }) {
   const [searchParams, setSearchParams] = useSearchParams()
   const activeTab = searchParams.get("tab") || null
   const [openYears, setOpenYears] = useState({})
   const [openQuarters, setOpenQuarters] = useState({})
 
-  const tabs = useMemo(
-    () => [...new Set(data.map((item) => item.category))].map((cat) => ({ key: cat, label: cat })),
-    [data],
-  )
+  const tabs = useMemo(() => {
+    if (categories && categories.length > 0) {
+      return categories.map((cat) => ({ key: cat, label: cat }))
+    }
+    return [...new Set(data.map((item) => item.category))].map((cat) => ({ key: cat, label: cat }))
+  }, [categories, data])
+
+  // Default ke tab pertama jika belum ada tab dipilih
+  const effectiveTab = activeTab || (tabs.length > 0 ? tabs[0].key : null)
 
   const filteredData = useMemo(
-    () => (activeTab ? data.filter((item) => item.category === activeTab) : data),
-    [data, activeTab],
+    () => (effectiveTab ? data.filter((item) => item.category === effectiveTab) : data),
+    [data, effectiveTab],
   )
 
   const groupedByYear = useMemo(() => {
@@ -61,7 +66,7 @@ export default function RegionalLayout({ title, banner, data = [], loading }) {
                 key={tab.key}
                 onClick={() => setSearchParams({ tab: tab.key })}
                 className={`px-4 py-2 text-sm rounded-md transition ${
-                  activeTab === tab.key
+                  effectiveTab === tab.key
                     ? "bg-yellow-400 text-dark font-semibold"
                     : "text-gray-500 hover:bg-gray-100"
                 }`}>

@@ -2,22 +2,28 @@ import { BrowserRouter, Routes, Route } from "react-router-dom"
 
 import LoginPage from "../pages/LoginPage.jsx"
 import HomePage from "../pages/HomePage.jsx"
-import AdminDashboard from "../pages/admin/AdminDashboard.jsx"
-import AdminProfile from "../pages/admin/AdminProfile.jsx"
 
 import Publikasi from "../pages/publikasi/Publikasi"
 import Makroekonomi from "../pages/MakroEkonomi/MakroEkonomi.jsx"
 import Industry from "../pages/Industri/Industri.jsx"
 import Regional from "../pages/Regional/Regional.jsx"
 
+import AdminDashboard from "../pages/Admin/AdminDashboard.jsx"
+import AdminProfile from "../pages/Admin/AdminProfile.jsx"
+import AdminPublikasi from "../pages/Admin/AdminPublikasi.jsx"
+import AdminUsers from "../pages/Admin/AdminUsers.jsx"
+import AdminSettings from "../pages/Admin/AdminSettings.jsx"
+
 import MainLayout from "../layouts/MainLayout.jsx"
 import AdminLayout from "../layouts/AdminLayout.jsx"
 
 import ProtectedRoute from "./ProtectedRoute.jsx"
 
+const USER_ROLES = ["USER", "ADMIN"]
+const ADMIN_ROLES = ["ADMIN"]
+
 const AppRoutes = () => {
   return (
-    // <BrowserRouter>
     <BrowserRouter basename="/dev-mroe-fe">
       <Routes>
         {/* LOGIN */}
@@ -27,7 +33,7 @@ const AppRoutes = () => {
         <Route
           path="/home"
           element={
-            <ProtectedRoute allowedRole="{['USER', 'ADMIN']}">
+            <ProtectedRoute allowedRoles={USER_ROLES}>
               <MainLayout>
                 <HomePage />
               </MainLayout>
@@ -38,7 +44,7 @@ const AppRoutes = () => {
         <Route
           path="/publikasi"
           element={
-            <ProtectedRoute allowedRole="{['USER', 'ADMIN']}">
+            <ProtectedRoute allowedRoles={USER_ROLES}>
               <MainLayout>
                 <Publikasi />
               </MainLayout>
@@ -49,7 +55,7 @@ const AppRoutes = () => {
         <Route
           path="/makroekonomi"
           element={
-            <ProtectedRoute allowedRole="{['USER', 'ADMIN']}">
+            <ProtectedRoute allowedRoles={USER_ROLES}>
               <MainLayout>
                 <Makroekonomi />
               </MainLayout>
@@ -60,7 +66,7 @@ const AppRoutes = () => {
         <Route
           path="/industry"
           element={
-            <ProtectedRoute allowedRole="{['USER', 'ADMIN']}">
+            <ProtectedRoute allowedRoles={USER_ROLES}>
               <MainLayout>
                 <Industry />
               </MainLayout>
@@ -71,7 +77,7 @@ const AppRoutes = () => {
         <Route
           path="/regional"
           element={
-            <ProtectedRoute allowedRole="{['USER', 'ADMIN']}">
+            <ProtectedRoute allowedRoles={USER_ROLES}>
               <MainLayout>
                 <Regional />
               </MainLayout>
@@ -83,11 +89,14 @@ const AppRoutes = () => {
         <Route
           path="/admin"
           element={
-            <ProtectedRoute allowedRole="{['ADMIN']}">
+            <ProtectedRoute allowedRoles={ADMIN_ROLES}>
               <AdminLayout />
             </ProtectedRoute>
           }>
           <Route index element={<AdminDashboard />} />
+          <Route path="publikasi" element={<AdminPublikasi />} />
+          <Route path="users" element={<AdminUsers />} />
+          <Route path="settings" element={<AdminSettings />} />
           <Route path="profile" element={<AdminProfile />} />
         </Route>
       </Routes>
