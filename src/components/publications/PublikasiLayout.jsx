@@ -3,8 +3,15 @@ import { useSearchParams } from "react-router-dom"
 import { FaFilePdf } from "react-icons/fa"
 import { ChevronUp, ChevronDown } from "lucide-react"
 
-
-export default function PublikasiLayout({ title, banner, data = [], loading }) {
+/**
+ * PublikasiLayout
+ * ---------------
+ * Props:
+ *   title, banner, categories, data, loading
+ *   gridCategories - array kategori yang pakai layout grid (default: [kategori pertama])
+ *                    sisanya pakai layout list-row
+ */
+export default function PublikasiLayout({ title, banner, categories, gridCategories, data = [], loading }) {
   const [searchParams, setSearchParams] = useSearchParams()
   const activeTab = searchParams.get("tab") || null
   const [search, setSearch] = useState("")
@@ -12,20 +19,34 @@ export default function PublikasiLayout({ title, banner, data = [], loading }) {
   const [openMonths, setOpenMonths] = useState({})
 
   const tabs = useMemo(() => {
+    if (categories && categories.length > 0) {
+      return categories.map((cat) => ({ key: cat, label: cat }))
+    }
     return [...new Set(data.map((item) => item.category))].map((cat) => ({
       key: cat,
       label: cat,
     }))
-  }, [data])
+  }, [categories, data])
+
+  const effectiveTab = activeTab || (tabs.length > 0 ? tabs[0].key : null)
+
+  // Determine layout: grid or list
+  const isGridLayout = useMemo(() => {
+    if (gridCategories && gridCategories.length > 0) {
+      return gridCategories.includes(effectiveTab)
+    }
+    // Default: tab pertama pakai grid, sisanya list
+    return tabs.length > 0 && effectiveTab === tabs[0].key
+  }, [effectiveTab, gridCategories, tabs])
 
   const filteredData = useMemo(() => {
-    let result = activeTab ? data.filter((item) => item.category === activeTab) : data
+    let result = effectiveTab ? data.filter((item) => item.category === effectiveTab) : data
     if (search)
       result = result.filter((item) =>
         (item.title ?? "").toLowerCase().includes(search.toLowerCase()),
       )
     return result
-  }, [data, activeTab, search])
+  }, [data, effectiveTab, search])
 
   const groupedByYear = useMemo(() => {
     const yearMap = {}
@@ -67,7 +88,7 @@ export default function PublikasiLayout({ title, banner, data = [], loading }) {
                 key={tab.key}
                 onClick={() => setSearchParams({ tab: tab.key })}
                 className={`px-4 py-2 text-sm rounded-md transition ${
-                  activeTab === tab.key
+                  effectiveTab === tab.key
                     ? "bg-yellow-400 text-dark font-semibold"
                     : "text-gray-500 hover:bg-gray-100"
                 }`}>
@@ -102,7 +123,7 @@ export default function PublikasiLayout({ title, banner, data = [], loading }) {
         <div className="text-center text-gray-500">Tidak ada data ditemukan</div>
       )}
 
-      {/* ACCORDION YEAR -> MONTH -> GRID */}
+      {/* ACCORDION YEAR -> MONTH -> CONTENT */}
       {!loading && (
         <div className="space-y-2">
           {groupedByYear.map(({ year, months }) => (
@@ -132,25 +153,70 @@ export default function PublikasiLayout({ title, banner, data = [], loading }) {
                         </button>
 
                         {openMonths[key] && (
-                          <div className="p-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-                            {items.map((item) => (
-                              <div
-                                key={item.id}
-                                className="flex items-center gap-2 border rounded-lg px-3 py-2 bg-white hover:bg-gray-50">
-                                <FaFilePdf className="text-red-500 text-2xl shrink-0" />
-                                <span className="text-sm text-gray-600 flex-1 truncate">
-                                  {item.title}
-                                </span>
-                                <a
-                                  href={item.file || "#"}
-                                  className="text-sm font-bold text-[#3d5a80] hover:underline shrink-0"
-                                  target="_blank"
-                                  rel="noreferrer">
-                                  Unduh
-                                </a>
+                          isGridLayout ? (
+                            /* GRID LAYOUT (Daily Economic style) */
+                            <div className="p-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                              {items.map((item) => (
+                                <div
+                                  key={item.id}
+                                  className="flex items-center gap-2 border rounded-lg px-3 py-2 bg-white hover:bg-gray-50">
+                                  <FaFilePdf className="text-red-500 text-2xl shrink-0" />
+                                  <span className="text-sm text-gray-600 flex-1 truncate">
+                                    {item.title}
+                                  </span>
+                                  <a
+                                    href={item.file || "#"}
+                                    className="text-sm font-bold text-[#3d5a80] hover:underline shrink-0"
+                                    target="_blank"
+                                    rel="noreferrer">
+                                    Unduh
+                                  </a>
+                                </div>
+                              ))}
+                            </div>
+                          ) : (
+                            /* LIST-ROW LAYOUT (bjb Business Insight / Lainnya style) */
+                            <div className="px-5 py-3 space-y-3">
+                              {/* Table header */}
+                              <div className="hidden md:grid grid-cols-[auto_1fr_1fr_1fr_1fr_auto] gap-4 text-xs text-gray-400 font-medium px-2">
+                                <span className="w-8" />
+                                <span>Judul kajian</span>
+                                <span>Deskripsi</span>
+                                <span>Tgl publikasi</span>
+                                <span>Penyusun</span>
+                                <span className="w-24" />
                               </div>
-                            ))}
-                          </div>
+
+                              {items.map((item) => (
+                                <div
+                                  key={item.id}
+                                  className="flex flex-col md:grid md:grid-cols-[auto_1fr_1fr_1fr_1fr_auto] gap-2 md:gap-4 items-start md:items-center border rounded-lg px-4 py-3 bg-white hover:bg-gray-50">
+                                  <FaFilePdf className="text-red-500 text-2xl shrink-0" />
+                                  <span className="text-sm font-medium text-slate-700">{item.title}</span>
+                                  <span className="text-sm text-gray-500">{item.description || "-"}</span>
+                                  <span className="text-sm text-gray-500">{item.month || "-"}</span>
+                                  <span className="text-sm text-gray-500">{item.author || "-"}</span>
+                                  <div className="flex items-center shrink-0">
+                                    <a
+                                      href={item.file || "#"}
+                                      className="text-sm font-semibold text-[#3d5a80] hover:underline px-2"
+                                      target="_blank"
+                                      rel="noreferrer">
+                                      Lihat
+                                    </a>
+                                    <span className="text-gray-300">|</span>
+                                    <a
+                                      href={item.file || "#"}
+                                      className="text-sm font-semibold text-[#3d5a80] hover:underline px-2"
+                                      download
+                                      rel="noreferrer">
+                                      Unduh
+                                    </a>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          )
                         )}
                       </div>
                     )
