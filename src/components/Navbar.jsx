@@ -91,7 +91,7 @@ export default function Navbar() {
                     {menu.children.map((child) => (
                       <Link
                         key={child.tab}
-                        to={`${menu.path}?tab=${encodeURIComponent(child.tab)}`}
+                        to={`${menu.path}?tab=${child.tab}`}
                         className="block px-4 py-3 text-sm hover:bg-gray-100 transition">
                         {child.label}
                       </Link>
@@ -169,7 +169,7 @@ export default function Navbar() {
                         {menu.children.map((child) => (
                           <li key={child.tab}>
                             <Link
-                              to={`${menu.path}?tab=${encodeURIComponent(child.tab)}`}
+                              to={`${menu.path}?tab=${child.tab}`}
                               className="block py-1.5 text-sm text-blue-200 hover:text-yellow-300"
                               onClick={() => setMobileOpen(false)}>
                               {child.label}

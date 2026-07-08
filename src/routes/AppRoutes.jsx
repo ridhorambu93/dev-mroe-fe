@@ -2,11 +2,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom"
 
 import LoginPage from "../pages/LoginPage.jsx"
 import HomePage from "../pages/HomePage.jsx"
-
-import Publikasi from "../pages/publikasi/Publikasi"
-import Makroekonomi from "../pages/MakroEkonomi/MakroEkonomi.jsx"
-import Industry from "../pages/Industri/Industri.jsx"
-import Regional from "../pages/Regional/Regional.jsx"
+import DynamicPage from "../pages/DynamicPage.jsx"
 
 import AdminDashboard from "../pages/Admin/AdminDashboard.jsx"
 import AdminProfile from "../pages/Admin/AdminProfile.jsx"
@@ -41,50 +37,6 @@ const AppRoutes = () => {
           }
         />
 
-        <Route
-          path="/publikasi"
-          element={
-            <ProtectedRoute allowedRoles={USER_ROLES}>
-              <MainLayout>
-                <Publikasi />
-              </MainLayout>
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/makroekonomi"
-          element={
-            <ProtectedRoute allowedRoles={USER_ROLES}>
-              <MainLayout>
-                <Makroekonomi />
-              </MainLayout>
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/industry"
-          element={
-            <ProtectedRoute allowedRoles={USER_ROLES}>
-              <MainLayout>
-                <Industry />
-              </MainLayout>
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/regional"
-          element={
-            <ProtectedRoute allowedRoles={USER_ROLES}>
-              <MainLayout>
-                <Regional />
-              </MainLayout>
-            </ProtectedRoute>
-          }
-        />
-
         {/* ADMIN AREA */}
         <Route
           path="/admin"
@@ -99,6 +51,18 @@ const AppRoutes = () => {
           <Route path="settings" element={<AdminSettings />} />
           <Route path="profile" element={<AdminProfile />} />
         </Route>
+
+        {/* DYNAMIC PAGES — catch-all for all publication pages */}
+        <Route
+          path="/*"
+          element={
+            <ProtectedRoute allowedRoles={USER_ROLES}>
+              <MainLayout>
+                <DynamicPage />
+              </MainLayout>
+            </ProtectedRoute>
+          }
+        />
       </Routes>
     </BrowserRouter>
   )

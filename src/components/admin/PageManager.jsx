@@ -13,11 +13,11 @@ export default function PageManager() {
   const [editing, setEditing] = useState(null)
   const [deleting, setDeleting] = useState(null)
 
-  const [form, setForm] = useState({ name: "", slug: "", banner: "", categories: "", gridCategories: "" })
+  const [form, setForm] = useState({ name: "", slug: "", banner: "", categories: "", gridCategories: "", layout: "default", gallery: [] })
   const [errors, setErrors] = useState({})
 
   const resetForm = () => {
-    setForm({ name: "", slug: "", banner: "", categories: "", gridCategories: "" })
+    setForm({ name: "", slug: "", banner: "", categories: "", gridCategories: "", layout: "default", gallery: [] })
     setErrors({})
     setEditing(null)
     setFormOpen(false)
@@ -36,6 +36,8 @@ export default function PageManager() {
       banner: page.banner || "",
       categories: (page.categories || []).join(", "),
       gridCategories: (page.gridCategories || []).join(", "),
+      layout: page.layout || "default",
+      gallery: page.gallery || [],
     })
     setErrors({})
     setFormOpen(true)
@@ -45,7 +47,7 @@ export default function PageManager() {
     const e = {}
     if (!form.name.trim()) e.name = "Nama halaman wajib diisi"
     if (!form.slug.trim()) e.slug = "Slug wajib diisi"
-    if (!form.categories.trim()) e.categories = "Minimal 1 kategori"
+    if (form.layout !== "forum" && !form.categories.trim()) e.categories = "Minimal 1 kategori"
     setErrors(e)
     return Object.keys(e).length === 0
   }
@@ -53,12 +55,17 @@ export default function PageManager() {
   const handleSubmit = async (e) => {
     e.preventDefault()
     if (!validate()) return
+    // Pastikan slug diawali /
+    let slug = form.slug.trim()
+    if (!slug.startsWith("/")) slug = "/" + slug
     const payload = {
       name: form.name.trim(),
-      slug: form.slug.trim(),
-      banner: form.banner.trim(),
+      slug,
+      banner: (form.banner || "").trim(),
       categories: form.categories.split(",").map((c) => c.trim()).filter(Boolean),
       gridCategories: form.gridCategories.split(",").map((c) => c.trim()).filter(Boolean),
+      layout: form.layout,
+      gallery: form.gallery || [],
     }
     if (editing) await update(editing.id, payload)
     else await create(payload)
@@ -125,14 +132,18 @@ export default function PageManager() {
               {errors.slug && <p className="text-xs text-red-500 mt-1">{errors.slug}</p>}
             </div>
 
-            <div className="md:col-span-2">
+            <div>
               <label className="block text-sm font-medium text-slate-600 mb-1">
-                Banner / Hero Image
+                Tipe Layout
               </label>
-              <ImageUpload
-                value={form.banner}
-                onChange={(url) => setForm({ ...form, banner: url })}
-              />
+              <select
+                value={form.layout}
+                onChange={(e) => setForm({ ...form, layout: e.target.value })}
+                className="w-full border rounded-lg px-3 py-2 text-sm bg-white">
+                <option value="default">Default (Accordion)</option>
+                <option value="regional">Regional (Triwulan)</option>
+                <option value="forum">Forum / Event (Slider + Materi)</option>
+              </select>
             </div>
 
             <div>
@@ -143,25 +154,66 @@ export default function PageManager() {
                 type="text"
                 value={form.categories}
                 onChange={(e) => setForm({ ...form, categories: e.target.value })}
-                placeholder="Pisahkan dengan koma: Daily Economic, Lainnya"
+                placeholder="Pisahkan dengan koma"
                 className="w-full border rounded-lg px-3 py-2 text-sm"
               />
               {errors.categories && <p className="text-xs text-red-500 mt-1">{errors.categories}</p>}
+              <p className="text-xs text-slate-400 mt-1">
+                {form.layout === "forum" ? "Digunakan sebagai nama pembicara/section" : "Digunakan sebagai tab filter"}
+              </p>
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-slate-600 mb-1">
-                Kategori Layout Grid
-              </label>
-              <input
-                type="text"
-                value={form.gridCategories}
-                onChange={(e) => setForm({ ...form, gridCategories: e.target.value })}
-                placeholder="Kategori yg pakai grid (kosong = semua list)"
-                className="w-full border rounded-lg px-3 py-2 text-sm"
-              />
-              <p className="text-xs text-slate-400 mt-1">Kategori yang tidak ada di sini akan pakai layout list (tabel).</p>
-            </div>
+            {form.layout === "default" && (
+              <div>
+                <label className="block text-sm font-medium text-slate-600 mb-1">
+                  Kategori Layout Grid
+                </label>
+                <input
+                  type="text"
+                  value={form.gridCategories}
+                  onChange={(e) => setForm({ ...form, gridCategories: e.target.value })}
+                  placeholder="Kategori yg pakai grid (kosong = semua list)"
+                  className="w-full border rounded-lg px-3 py-2 text-sm"
+                />
+              </div>
+            )}
+
+            {form.layout !== "forum" && (
+              <div className="md:col-span-2">
+                <label className="block text-sm font-medium text-slate-600 mb-1">
+                  Banner / Hero Image
+                </label>
+                <ImageUpload
+                  value={form.banner}
+                  onChange={(url) => setForm({ ...form, banner: url })}
+                />
+              </div>
+            )}
+
+            {form.layout === "forum" && (
+              <div className="md:col-span-2">
+                <label className="block text-sm font-medium text-slate-600 mb-1">
+                  Gallery / Slider Images
+                </label>
+                <div className="space-y-2">
+                  {form.gallery.map((img, i) => (
+                    <div key={i} className="flex items-center gap-2">
+                      <img src={img} alt={`Slide ${i+1}`} className="h-16 w-24 object-cover rounded" />
+                      <button
+                        type="button"
+                        onClick={() => setForm({ ...form, gallery: form.gallery.filter((_, idx) => idx !== i) })}
+                        className="text-xs text-red-500 hover:underline">
+                        Hapus
+                      </button>
+                    </div>
+                  ))}
+                  <ImageUpload
+                    value=""
+                    onChange={(url) => setForm({ ...form, gallery: [...form.gallery, url] })}
+                  />
+                </div>
+              </div>
+            )}
           </div>
 
           <div className="flex gap-3 pt-2">

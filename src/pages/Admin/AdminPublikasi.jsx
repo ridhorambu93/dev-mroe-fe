@@ -3,7 +3,7 @@ import HomeConfigEditor from "../../components/admin/HomeConfigEditor"
 import PageManager from "../../components/admin/PageManager"
 import ContentManager from "../../components/admin/ContentManager"
 import { pageService } from "../../services/pageService"
-import { serviceRegistry, REGIONAL_SLUGS } from "../../services/serviceRegistry"
+import { getServiceForSlug, REGIONAL_SLUGS } from "../../services/serviceRegistry"
 
 const tabs = [
   { key: "beranda", label: "Beranda" },
@@ -18,10 +18,10 @@ const MONTH_PLACEHOLDER = "Contoh: Januari 2026"
  * Category options diambil langsung dari page.categories (dinamis).
  */
 function buildFields(page) {
-  const isRegional = REGIONAL_SLUGS.includes(page.slug)
+  const layout = page.layout || "default"
   const categoryOptions = page.categories || []
 
-  if (isRegional) {
+  if (layout === "regional" || REGIONAL_SLUGS.includes(page.slug)) {
     return [
       { name: "title", label: "Judul Kajian", type: "text", required: true, table: true },
       { name: "description", label: "Deskripsi", type: "textarea", required: true, table: true },
@@ -29,6 +29,19 @@ function buildFields(page) {
       { name: "quarter", label: "Triwulan", type: "select", required: true, table: true, options: ["Triwulan I", "Triwulan II", "Triwulan III", "Triwulan IV"] },
       { name: "year", label: "Tahun", type: "text", required: true, table: true, placeholder: "Contoh: 2026" },
       { name: "publishDate", label: "Tgl Publikasi", type: "text", placeholder: "Contoh: 15 Desember 2026" },
+      { name: "author", label: "Penyusun", type: "text", required: true },
+      { name: "file", label: "File (PDF)", type: "file" },
+    ]
+  }
+
+  if (layout === "forum") {
+    return [
+      { name: "title", label: "Judul Materi", type: "text", required: true, table: true },
+      { name: "category", label: "Pembicara / Section", type: "select", required: true, table: true, options: categoryOptions },
+      { name: "description", label: "Deskripsi", type: "text", table: true },
+      { name: "quarter", label: "Triwulan", type: "select", required: true, table: true, options: ["Triwulan I", "Triwulan II", "Triwulan III", "Triwulan IV"] },
+      { name: "year", label: "Tahun", type: "text", required: true, table: true, placeholder: "Contoh: 2026" },
+      { name: "publishDate", label: "Tgl Publikasi", type: "text", placeholder: "Contoh: 20 Desember 2026" },
       { name: "author", label: "Penyusun", type: "text", required: true },
       { name: "file", label: "File (PDF)", type: "file" },
     ]
@@ -52,17 +65,15 @@ export default function AdminPublikasi() {
   // Fetch pages untuk tab Dokumen
   useEffect(() => {
     pageService.getAll().then((data) => {
-      // Hanya tampilkan pages yang punya service terdaftar
-      const registered = data.filter((p) => serviceRegistry[p.slug])
-      setPages(registered)
-      if (registered.length > 0 && !activePage) {
-        setActivePage(registered[0].slug)
+      setPages(data)
+      if (data.length > 0 && !activePage) {
+        setActivePage(data[0].slug)
       }
     })
-  }, [activeTab]) // re-fetch saat switch tab (supaya sync kalau admin baru edit page)
+  }, [activeTab])
 
   const currentPage = useMemo(() => pages.find((p) => p.slug === activePage), [pages, activePage])
-  const currentService = activePage ? serviceRegistry[activePage] : null
+  const currentService = activePage ? getServiceForSlug(activePage) : null
   const currentFields = currentPage ? buildFields(currentPage) : []
 
   return (
@@ -112,7 +123,11 @@ export default function AdminPublikasi() {
             <ContentManager
               key={currentPage.slug}
               title={currentPage.name}
-              description={`Kelola dokumen yang tampil di halaman ${currentPage.name}. Kategori: ${(currentPage.categories || []).join(", ")}`}
+              description={
+                currentPage.layout === "forum"
+                  ? `Kelola materi forum. Pembicara: ${(currentPage.categories || []).join(", ")}. Dokumen juga tampil di accordion Tahun → Triwulan.`
+                  : `Kelola dokumen halaman ${currentPage.name}. Kategori: ${(currentPage.categories || []).join(", ")}`
+              }
               service={currentService}
               fields={currentFields}
             />
