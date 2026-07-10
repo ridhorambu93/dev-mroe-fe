@@ -1,8 +1,7 @@
 import { useMemo, useState, useEffect } from "react"
 import { FaFilePdf } from "react-icons/fa"
 import { ChevronLeft, ChevronRight, ChevronUp, ChevronDown } from "lucide-react"
-
-const QUARTER_ORDER = ["Triwulan I", "Triwulan II", "Triwulan III", "Triwulan IV"]
+import { parseDateToPeriod } from "../../config/periodConfig"
 
 export default function ForumLayout({ title, config, data = [], loading }) {
   const gallery = config?.gallery || []
@@ -33,21 +32,22 @@ export default function ForumLayout({ title, config, data = [], loading }) {
     return order.filter((c) => map[c]).map((c) => ({ label: c, items: map[c] }))
   }, [data, config?.categories])
 
-  // Group all data by year → quarter (for accordion below)
+  // Group all data by year → period (for accordion below)
   const byYear = useMemo(() => {
     const yearMap = {}
     data.forEach((item) => {
-      const year = item.year || "Unknown"
-      const quarter = item.quarter || "Triwulan I"
+      const dateStr = item.startDate || item.publishDate
+      const { year, period } = parseDateToPeriod(dateStr, "event")
+      const groupKey = period || "Umum"
       if (!yearMap[year]) yearMap[year] = {}
-      if (!yearMap[year][quarter]) yearMap[year][quarter] = []
-      yearMap[year][quarter].push(item)
+      if (!yearMap[year][groupKey]) yearMap[year][groupKey] = []
+      yearMap[year][groupKey].push(item)
     })
     return Object.entries(yearMap)
       .sort(([a], [b]) => b - a)
-      .map(([year, quarters]) => ({
+      .map(([year, periods]) => ({
         year,
-        quarters: QUARTER_ORDER.filter((q) => quarters[q]).map((q) => ({ quarter: q, items: quarters[q] })),
+        periods: Object.entries(periods).map(([period, items]) => ({ period, items })),
       }))
   }, [data])
 
@@ -59,7 +59,7 @@ export default function ForumLayout({ title, config, data = [], loading }) {
       <FaFilePdf className="text-red-500 text-2xl shrink-0" />
       <span className="text-sm font-medium text-slate-700">{item.title}</span>
       <span className="text-sm text-gray-500">{item.description || "-"}</span>
-      <span className="text-sm text-gray-500">{item.publishDate || item.month || "-"}</span>
+      <span className="text-sm text-gray-500">{item.startDate ? `${item.startDate} - ${item.endDate}` : item.publishDate || "-"}</span>
       <span className="text-sm text-gray-500">{item.author || "-"}</span>
       <div className="flex items-center shrink-0">
         <a href={item.file || "#"} className="text-sm font-semibold text-[#3d5a80] hover:underline px-2" target="_blank" rel="noreferrer">Lihat</a>
@@ -130,10 +130,10 @@ export default function ForumLayout({ title, config, data = [], loading }) {
           </div>
         ))}
 
-        {/* YEAR → QUARTER ACCORDION */}
+        {/* YEAR → PERIOD ACCORDION */}
         {!loading && byYear.length > 0 && (
           <div className="space-y-2 mt-8">
-            {byYear.map(({ year, quarters }) => (
+            {byYear.map(({ year, periods }) => (
               <div key={year} className="border rounded-lg overflow-hidden">
                 <button
                   onClick={() => toggleYear(year)}
@@ -144,14 +144,14 @@ export default function ForumLayout({ title, config, data = [], loading }) {
 
                 {openYears[year] && (
                   <div className="divide-y">
-                    {quarters.map(({ quarter, items }) => {
-                      const qKey = `${year}-${quarter}`
+                    {periods.map(({ period, items }) => {
+                      const qKey = `${year}-${period}`
                       return (
                         <div key={qKey}>
                           <button
                             onClick={() => toggleQuarter(qKey)}
                             className="w-full flex justify-between items-center px-5 py-3 bg-gray-50 hover:bg-gray-100 text-[#e6a817] font-semibold">
-                            <span>{quarter}</span>
+                            <span>{period}</span>
                             {openQuarters[qKey] ? <ChevronUp size={18} className="text-gray-500" /> : <ChevronDown size={18} className="text-gray-500" />}
                           </button>
 

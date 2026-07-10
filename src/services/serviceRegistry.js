@@ -2,6 +2,8 @@ import { publicationService } from "./publicationService"
 import { makroEkonomiService } from "./makroEkonomiService"
 import { industriService } from "./industriService"
 import { regionalService } from "./regionalService"
+import { marketIntelligenceService } from "./marketIntelligenceService"
+import { outlookForumService } from "./outlookForumService"
 import { getDocumentService } from "./documentServiceFactory"
 
 const registeredServices = {
@@ -9,6 +11,8 @@ const registeredServices = {
   "/makroekonomi": makroEkonomiService,
   "/industry": industriService,
   "/regional": regionalService,
+  "/market-intelligence": marketIntelligenceService,
+  "/outlook-economic-forum": outlookForumService,
 }
 
 export function getServiceForSlug(slug) {
