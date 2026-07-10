@@ -1,16 +1,5 @@
 import { createLocalRepository } from "../utils/localRepository"
 
-/**
- * documentServiceFactory
- * ----------------------
- * Buat service CRUD untuk halaman apa pun berdasarkan slug.
- * Setiap slug punya localStorage key sendiri: "mroe:docs:{slug}"
- * 
- * Nanti saat API siap, ganti dengan:
- *   getAll: () => apiClient.get(`/api/documents?page=${slug}`)
- *   create: (data) => apiClient.post(`/api/documents`, { ...data, page: slug })
- *   dll.
- */
 const cache = {}
 
 export function getDocumentService(slug) {
