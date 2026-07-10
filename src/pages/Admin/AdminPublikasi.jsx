@@ -1,11 +1,14 @@
-import { useState, useMemo } from "react"
-import { usePages, useDocuments, useDocumentMutations } from "../../hooks/useQueryHooks"
+import { useState, useMemo, useEffect } from "react"
+import { usePages, useDocuments, useDocumentMutations, usePageMutation } from "../../hooks/useQueryHooks"
 import { buildPeriodFields, PERIOD_TYPES, DEFAULT_SUBSECTION_PERIODS } from "../../config/periodConfig"
 import { Plus, Pencil, Trash2, Search, Info } from "lucide-react"
 import FormModal from "../../components/admin/FormModal"
 import ConfirmDialog from "../../components/admin/ConfirmDialog"
 import Pagination from "../../components/admin/Pagination"
 import HomeConfigEditor from "../../components/admin/HomeConfigEditor"
+import SubsectionBannerEditor from "../../components/admin/SubsectionBannerEditor"
+import ImageUpload from "../../components/admin/ImageUpload"
+import { dailyMarketDashboardService } from "../../services/dailyMarketDashboardService"
 
 const PAGE_SIZE = 10
 
@@ -18,6 +21,7 @@ export default function AdminPublikasi() {
   const tabs = [
     { key: "beranda", label: "⚙️ Beranda" },
     ...sortedPages.map((p) => ({ key: p.slug, label: p.name })),
+    { key: "daily-market-dashboard", label: "Daily Market Dashboard" },
   ]
 
   return (
@@ -39,10 +43,55 @@ export default function AdminPublikasi() {
       </div>
 
       {activeSection === "beranda" && <HomeConfigEditor />}
+      {activeSection === "daily-market-dashboard" && <DailyMarketContent />}
 
       {sortedPages.find((p) => p.slug === activeSection) && (
         <SectionContent page={sortedPages.find((p) => p.slug === activeSection)} />
       )}
+    </div>
+  )
+}
+
+function DailyMarketContent() {
+  const [imageUrl, setImageUrl] = useState("")
+  const [saving, setSaving] = useState(false)
+  const [toast, setToast] = useState(null)
+
+  useEffect(() => {
+    dailyMarketDashboardService.get().then((d) => setImageUrl(d.imageUrl || ""))
+  }, [])
+
+  const handleSave = async () => {
+    setSaving(true)
+    try {
+      await dailyMarketDashboardService.save({ imageUrl })
+      setToast({ message: "Gambar berhasil disimpan!", type: "success" })
+    } catch {
+      setToast({ message: "Gagal menyimpan.", type: "error" })
+    } finally {
+      setSaving(false)
+      setTimeout(() => setToast(null), 3000)
+    }
+  }
+
+  return (
+    <div className="space-y-5">
+      {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
+      <div>
+        <h2 className="text-2xl font-bold text-slate-800">Daily Market Dashboard</h2>
+        <p className="text-sm text-slate-500 mt-1">Upload gambar dashboard yang ditampilkan ke user.</p>
+      </div>
+      <div className="bg-white rounded-xl border p-6 space-y-4 max-w-xl">
+        <label className="block text-sm font-medium text-slate-600">Gambar Dashboard</label>
+        <ImageUpload value={imageUrl} onChange={setImageUrl} />
+        <button
+          onClick={handleSave}
+          disabled={saving}
+          className="px-5 py-2 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700 disabled:opacity-60"
+        >
+          {saving ? "Menyimpan..." : "Simpan"}
+        </button>
+      </div>
     </div>
   )
 }
@@ -61,6 +110,7 @@ function Toast({ message, type, onClose }) {
 function SectionContent({ page }) {
   const { data: docs = [], isLoading } = useDocuments(page.slug)
   const { createDoc, updateDoc, removeDoc } = useDocumentMutations(page.slug)
+  const updatePage = usePageMutation()
 
   const [activeSubsection, setActiveSubsection] = useState(page.categories?.[0] || null)
   const [search, setSearch] = useState("")
@@ -78,7 +128,21 @@ function SectionContent({ page }) {
   const subsections = page.categories || []
   const subsectionPeriods = page.subsectionPeriods || {}
 
-  const periodType = subsectionPeriods[activeSubsection]
+  const handlePeriodChange = async (sub, newType) => {
+    const updated = { ...subsectionPeriods, [sub]: newType }
+    await updatePage.mutateAsync({ id: page.id, data: { subsectionPeriods: updated } })
+    showToast(`Periode "${sub}" diubah ke ${PERIOD_TYPES[newType]?.label}`)
+  }
+
+  const subsectionBanners = page.subsectionBanners || {}
+
+  const handleBannerSave = async (sub, bannerData) => {
+    const updated = { ...subsectionBanners, [sub]: bannerData }
+    await updatePage.mutateAsync({ id: page.id, data: { subsectionBanners: updated } })
+    showToast(`Banner "${sub}" berhasil disimpan!`)
+  }
+
+  const periodType = (PERIOD_TYPES[subsectionPeriods[activeSubsection]] ? subsectionPeriods[activeSubsection] : null)
     || DEFAULT_SUBSECTION_PERIODS[activeSubsection]
     || "monthly"
 
@@ -171,13 +235,36 @@ function SectionContent({ page }) {
               return (
                 <tr key={sub} className="border-b last:border-0 hover:bg-gray-50">
                   <td className="px-4 py-2 font-medium text-slate-700">{sub}</td>
-                  <td className="px-4 py-2 text-slate-500">{PERIOD_TYPES[pt]?.label || pt}</td>
+                  <td className="px-4 py-2">
+                    <select
+                      value={pt}
+                      onChange={(e) => handlePeriodChange(sub, e.target.value)}
+                      className="border rounded-md px-2 py-1 text-sm bg-white text-slate-700"
+                    >
+                      {Object.entries(PERIOD_TYPES).map(([key, { label }]) => (
+                        <option key={key} value={key}>{label}</option>
+                      ))}
+                    </select>
+                  </td>
                   <td className="px-4 py-2 text-slate-500">{count}</td>
                 </tr>
               )
             })}
           </tbody>
         </table>
+      </div>
+
+      {/* SUBSECTION BANNERS */}
+      <div className="space-y-3">
+        <h3 className="text-sm font-semibold text-slate-600">Banner per Subsection</h3>
+        {subsections.map((sub) => (
+          <SubsectionBannerEditor
+            key={sub}
+            subsection={sub}
+            bannerData={subsectionBanners[sub]}
+            onSave={handleBannerSave}
+          />
+        ))}
       </div>
 
       {/* SUBSECTION TABS */}

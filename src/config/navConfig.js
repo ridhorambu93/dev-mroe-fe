@@ -38,19 +38,22 @@ export const NAV_MENUS = [
     path: "/regional",
     children: [
       { label: "Mapping Ekonomi", tab: "mapping-ekonomi" },
-      { label: "Pemetaan Sektoral", tab: "pemetaan-sektoral-ekonomi-kredit-perbankan" },
+      {
+        label: "Pemetaan Sektoral",
+        tab: "pemetaan-sektoral-ekonomi-kredit-perbankan",
+      },
     ],
   },
   {
-    label: "Daily Market Dashboard",
-    path: "/daily-market-dashboard",
+    label: "Market Intelligence",
+    path: "/market-intelligence",
   },
   {
     label: "Outlook Economic Forum",
     path: "/outlook-economic-forum",
   },
   {
-    label: "Market Intelligence",
-    path: "/market-intelligence",
+    label: "Daily Market Dashboard",
+    path: "/daily-market-dashboard",
   },
 ]

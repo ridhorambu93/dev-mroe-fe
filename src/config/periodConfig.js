@@ -1,82 +1,81 @@
 /**
  * periodConfig
  * ------------
- * Konfigurasi periode per subsection.
- * Menentukan field apa yang muncul di form admin berdasarkan tipe periode.
+ * Admin cukup input tanggal (date picker).
+ * Frontend parse otomatis ke bulan/triwulan/semester/tahun
+ * berdasarkan period type subsection.
  *
  * periodType:
- *   "daily"      → field: tanggal (date picker / text)
- *   "monthly"    → field: bulan + tahun
- *   "quarterly"  → field: triwulan + tahun
- *   "semester"   → field: semester + tahun
- *   "yearly"     → field: tahun
- *   "event"      → field: tanggal event (free text)
+ *   "monthly"    → 1 date → extract bulan + tahun
+ *   "quarterly"  → 1 date → hitung triwulan + tahun
+ *   "semester"   → 1 date → hitung semester + tahun
+ *   "yearly"     → 1 date → extract tahun
+ *   "event"      → 2 dates → tanggal mulai + selesai
  */
 
 export const PERIOD_TYPES = {
-  daily: { label: "Harian", fields: ["publishDate"] },
-  monthly: { label: "Bulanan", fields: ["month", "year"] },
-  quarterly: { label: "Triwulan", fields: ["quarter", "year"] },
-  semester: { label: "Semester", fields: ["semester", "year"] },
-  yearly: { label: "Tahunan", fields: ["year"] },
-  event: { label: "By Event", fields: ["publishDate"] },
+  monthly: { label: "Bulanan" },
+  quarterly: { label: "Triwulan" },
+  semester: { label: "Semester" },
+  yearly: { label: "Tahunan" },
+  event: { label: "By Event" },
 }
 
-export const MONTH_OPTIONS = [
+const MONTH_NAMES = [
   "Januari", "Februari", "Maret", "April", "Mei", "Juni",
   "Juli", "Agustus", "September", "Oktober", "November", "Desember",
 ]
 
-export const QUARTER_OPTIONS = ["Triwulan I", "Triwulan II", "Triwulan III", "Triwulan IV"]
-export const SEMESTER_OPTIONS = ["Semester 1", "Semester 2"]
-
 /**
- * Build form fields berdasarkan period type.
- * Return array field config yang bisa langsung dipakai FormModal/ContentManager.
+ * Build form fields — admin cuma input date.
  */
 export function buildPeriodFields(periodType) {
+  if (periodType === "event") {
+    return [
+      { name: "startDate", label: "Tanggal Mulai", type: "date", required: true, table: true },
+      { name: "endDate", label: "Tanggal Selesai", type: "date", required: true, table: true },
+    ]
+  }
+  return [
+    { name: "publishDate", label: "Tanggal Publikasi", type: "date", required: true, table: true },
+  ]
+}
+
+/**
+ * Parse date string ke period info berdasarkan period type.
+ * Input: "2026-03-15", "quarterly"
+ * Output: { year: "2026", period: "Triwulan I" }
+ */
+export function parseDateToPeriod(dateStr, periodType) {
+  const d = new Date(dateStr)
+  if (isNaN(d)) return { year: "Unknown", period: "Unknown" }
+
+  const year = String(d.getFullYear())
+  const monthIdx = d.getMonth() // 0-11
+
   switch (periodType) {
-    case "daily":
-      return [
-        { name: "publishDate", label: "Tanggal Publikasi", type: "date", required: true, table: true },
-      ]
     case "monthly":
-      return [
-        { name: "month", label: "Bulan", type: "select", required: true, table: true, options: MONTH_OPTIONS },
-        { name: "year", label: "Tahun", type: "text", required: true, table: true, placeholder: "2026" },
-      ]
-    case "quarterly":
-      return [
-        { name: "quarter", label: "Triwulan", type: "select", required: true, table: true, options: QUARTER_OPTIONS },
-        { name: "year", label: "Tahun", type: "text", required: true, table: true, placeholder: "2026" },
-      ]
-    case "semester":
-      return [
-        { name: "semester", label: "Semester", type: "select", required: true, table: true, options: SEMESTER_OPTIONS },
-        { name: "year", label: "Tahun", type: "text", required: true, table: true, placeholder: "2026" },
-      ]
+      return { year, period: MONTH_NAMES[monthIdx] }
+    case "quarterly": {
+      const q = Math.floor(monthIdx / 3) + 1
+      return { year, period: `Triwulan ${["I", "II", "III", "IV"][q - 1]}` }
+    }
+    case "semester": {
+      const s = monthIdx < 6 ? 1 : 2
+      return { year, period: `Semester ${s}` }
+    }
     case "yearly":
-      return [
-        { name: "year", label: "Tahun", type: "text", required: true, table: true, placeholder: "2026" },
-      ]
-    case "event":
-      return [
-        { name: "publishDate", label: "Tanggal Event", type: "date", required: true, table: true },
-      ]
+      return { year, period: null }
     default:
-      return [
-        { name: "month", label: "Periode", type: "text", required: true, table: true, placeholder: "Januari 2026" },
-      ]
+      return { year, period: MONTH_NAMES[monthIdx] }
   }
 }
 
 /**
  * Default subsection period mapping.
- * Key = nama category/subsection, value = periodType.
- * Ini di-seed di pageService sebagai field `subsectionPeriods`.
  */
 export const DEFAULT_SUBSECTION_PERIODS = {
-  "Daily Economic": "daily",
+  "Daily Economic": "monthly",
   "Bjb Business Insight": "quarterly",
   "Lainnya": "quarterly",
   "Macro brief": "quarterly",
@@ -85,7 +84,7 @@ export const DEFAULT_SUBSECTION_PERIODS = {
   "Market Share": "monthly",
   "Rasio Industri": "semester",
   "Kajian NPL": "semester",
-  "Mapping Ekonomi": "yearly",
+  "Mapping Ekonomi": "quarterly",
   "Pemetaan Sektoral Ekonomi & Kredit Perbankan": "quarterly",
   "Kajian": "event",
   "Materi": "event",
