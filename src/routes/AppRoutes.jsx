@@ -5,7 +5,7 @@ import HomePage from "../pages/HomePage.jsx"
 import NotFoundPage from "../pages/NotFoundPage.jsx"
 
 // Static content pages
-import PublikasiPage from "../pages/Publikasi/PublikasiPage.jsx"
+import PublikasiPage from "../pages/publikasi/PublikasiPage.jsx"
 import MakroEkonomiPage from "../pages/MakroEkonomi/MakroEkonomiPage.jsx"
 import IndustriPage from "../pages/Industri/IndustriPage.jsx"
 import RegionalPage from "../pages/Regional/RegionalPage.jsx"
