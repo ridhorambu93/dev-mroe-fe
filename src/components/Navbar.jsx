@@ -1,14 +1,14 @@
 import { useAuth } from "../store/AuthContext"
 import { useState, useRef, useEffect } from "react"
 import { useNavigate, Link } from "react-router-dom"
-import { useNavMenus } from "../hooks/useNavMenus"
+import { NAV_MENUS } from "../config/navConfig"
 import roeLogo from "../assets/images/logo-home-roe.png"
 import bjbLogo from "../assets/images/bjb-logo.png"
 
 export default function Navbar() {
   const { user, logout } = useAuth()
   const navigate = useNavigate()
-  const menus = useNavMenus()
+  const menus = NAV_MENUS
 
   const [mobileOpen, setMobileOpen] = useState(false)
   const [profileOpen, setProfileOpen] = useState(false)

@@ -62,11 +62,26 @@ export default function PublikasiLayout({ title, banner, categories, gridCategor
   }, [data, effectiveCategory, search])
 
   const groupedByYear = useMemo(() => {
+    const MONTH_NAMES = ["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"]
     const yearMap = {}
     filteredData.forEach((item) => {
-      const parts = (item.month || "Unknown").split(" ")
-      const year = parts[1] || "Unknown"
-      const month = parts[0] || "Unknown"
+      let year = "Unknown"
+      let month = "Unknown"
+      if (item.publishDate) {
+        // format: "2026-01-15" (date input)
+        const d = new Date(item.publishDate)
+        if (!isNaN(d)) {
+          year = String(d.getFullYear())
+          month = MONTH_NAMES[d.getMonth()]
+        }
+      } else if (item.year) {
+        year = item.year
+        month = item.month || item.quarter || item.semester || "Umum"
+      } else if (item.month) {
+        const parts = item.month.split(" ")
+        month = parts[0] || "Unknown"
+        year = parts[1] || "Unknown"
+      }
       if (!yearMap[year]) yearMap[year] = {}
       if (!yearMap[year][month]) yearMap[year][month] = []
       yearMap[year][month].push(item)
@@ -207,7 +222,7 @@ export default function PublikasiLayout({ title, banner, categories, gridCategor
                                   <FaFilePdf className="text-red-500 text-2xl shrink-0" />
                                   <span className="text-sm font-medium text-slate-700">{item.title}</span>
                                   <span className="text-sm text-gray-500">{item.description || "-"}</span>
-                                  <span className="text-sm text-gray-500">{item.month || "-"}</span>
+                                  <span className="text-sm text-gray-500">{item.publishDate || item.month || (item.year ? `${item.month || item.quarter || item.semester || ''} ${item.year}`.trim() : "-")}</span>
                                   <span className="text-sm text-gray-500">{item.author || "-"}</span>
                                   <div className="flex items-center shrink-0">
                                     <a

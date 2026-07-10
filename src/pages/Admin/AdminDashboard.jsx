@@ -5,8 +5,6 @@ import { makroEkonomiService } from "../../services/makroEkonomiService"
 import { industriService } from "../../services/industriService"
 import { regionalService } from "../../services/regionalService"
 import { userService } from "../../services/userService"
-import { pageService } from "../../services/pageService"
-import { homeConfigService } from "../../services/homeConfigService"
 import { dailyMarketService } from "../../services/dailyMarketService"
 
 const getGreeting = () => {
@@ -88,8 +86,6 @@ const AdminDashboard = () => {
       industriService.reset(),
       regionalService.reset(),
       dailyMarketService.reset(),
-      pageService.reset(),
-      homeConfigService.reset(),
     ])
     window.location.reload()
   }
