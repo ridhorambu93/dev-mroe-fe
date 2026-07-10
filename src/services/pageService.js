@@ -11,7 +11,7 @@ const SEED = [
     layout: "default",
     gallery: [],
     subsectionPeriods: {
-      "Daily Economic": "daily",
+      "Daily Economic": "monthly",
       "Bjb Business Insight": "quarterly",
       "Lainnya": "quarterly",
     },
@@ -56,7 +56,7 @@ const SEED = [
     layout: "regional",
     gallery: [],
     subsectionPeriods: {
-      "Mapping Ekonomi": "yearly",
+      "Mapping Ekonomi": "quarterly",
       "Pemetaan Sektoral Ekonomi & Kredit Perbankan": "quarterly",
     },
   },

@@ -32,3 +32,13 @@ export function useDocumentMutations(slug) {
 
   return { createDoc, updateDoc, removeDoc }
 }
+
+/** Mutation to update a page (e.g. subsectionPeriods) */
+export function usePageMutation() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: ({ id, data }) => pageService.update(id, data),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["pages"] }),
+  })
+}
+

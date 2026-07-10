@@ -1,31 +1,32 @@
 import { useEffect, useState } from "react"
-import { dailyMarketService } from "../../services/dailyMarketService"
-import PublikasiLayout from "../../components/publications/PublikasiLayout"
-
-const CATEGORIES = ["Daily Market"]
-const GRID_CATEGORIES = ["Daily Market"]
+import { dailyMarketDashboardService } from "../../services/dailyMarketDashboardService"
 
 export default function DailyMarketPage() {
-  const [data, setData] = useState([])
+  const [imageUrl, setImageUrl] = useState("")
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    let active = true
-    dailyMarketService.getAll().then((docs) => {
-      if (!active) return
-      setData(docs || [])
-    }).finally(() => active && setLoading(false))
-    return () => { active = false }
+    dailyMarketDashboardService.get()
+      .then((d) => setImageUrl(d.imageUrl || ""))
+      .finally(() => setLoading(false))
   }, [])
 
+  if (loading) {
+    return <div className="flex justify-center py-20 text-slate-400">Memuat...</div>
+  }
+
+  if (!imageUrl) {
+    return (
+      <div className="flex flex-col items-center justify-center py-20 text-slate-400">
+        <p className="text-lg">Belum ada data Daily Market Dashboard.</p>
+      </div>
+    )
+  }
+
   return (
-    <PublikasiLayout
-      title="Daily Market Dashboard"
-      banner={null}
-      categories={CATEGORIES}
-      gridCategories={GRID_CATEGORIES}
-      data={data}
-      loading={loading}
-    />
+    <div className="max-w-6xl mx-auto py-6 px-4">
+      <h1 className="text-2xl font-bold text-slate-800 mb-6">Daily Market Dashboard</h1>
+      <img src={imageUrl} alt="Daily Market Dashboard" className="w-full rounded-xl shadow-sm border" />
+    </div>
   )
 }
