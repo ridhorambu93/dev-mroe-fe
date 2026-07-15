@@ -5,7 +5,6 @@ import { makroEkonomiService } from "../../services/makroEkonomiService"
 import { industriService } from "../../services/industriService"
 import { regionalService } from "../../services/regionalService"
 import { userService } from "../../services/userService"
-import { dailyMarketService } from "../../services/dailyMarketService"
 
 const getGreeting = () => {
   const hour = new Date().getHours()
@@ -85,7 +84,6 @@ const AdminDashboard = () => {
       makroEkonomiService.reset(),
       industriService.reset(),
       regionalService.reset(),
-      dailyMarketService.reset(),
     ])
     window.location.reload()
   }
