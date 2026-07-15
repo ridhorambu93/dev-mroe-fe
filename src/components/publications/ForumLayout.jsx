@@ -2,12 +2,14 @@ import { useMemo, useState, useEffect } from "react"
 import { FaFilePdf } from "react-icons/fa"
 import { ChevronLeft, ChevronRight, ChevronUp, ChevronDown } from "lucide-react"
 import { parseDateToPeriod } from "../../config/periodConfig"
+import { useWatermarkDownload } from "../../hooks/useWatermarkDownload"
 
 export default function ForumLayout({ title, config, data = [], loading }) {
   const gallery = config?.gallery || []
   const [slideIndex, setSlideIndex] = useState(0)
   const [openYears, setOpenYears] = useState({})
   const [openQuarters, setOpenQuarters] = useState({})
+  const { download: watermarkDownload } = useWatermarkDownload()
 
   useEffect(() => {
     if (gallery.length <= 1) return
@@ -64,7 +66,7 @@ export default function ForumLayout({ title, config, data = [], loading }) {
       <div className="flex items-center shrink-0">
         <a href={item.file || "#"} className="text-sm font-semibold text-[#3d5a80] hover:underline px-2" target="_blank" rel="noreferrer">Lihat</a>
         <span className="text-gray-300">|</span>
-        <a href={item.file || "#"} className="text-sm font-semibold text-[#3d5a80] hover:underline px-2" download rel="noreferrer">Unduh</a>
+        <button onClick={() => watermarkDownload(item.file, `${item.title}.pdf`)} className="text-sm font-semibold text-[#3d5a80] hover:underline px-2">Unduh</button>
       </div>
     </div>
   )

@@ -4,6 +4,7 @@ import { FaFilePdf } from "react-icons/fa"
 import { ChevronUp, ChevronDown, ChevronLeft, ChevronRight } from "lucide-react"
 import { slugify } from "../../utils/slugify"
 import { parseDateToPeriod, DEFAULT_SUBSECTION_PERIODS } from "../../config/periodConfig"
+import { useWatermarkDownload } from "../../hooks/useWatermarkDownload"
 
 function SubsectionBanner({ bannerData }) {
   const [slideIndex, setSlideIndex] = useState(0)
@@ -68,6 +69,7 @@ export default function RegionalLayout({ title, banner, categories, subsectionPe
   const [search, setSearch] = useState("")
   const [openYears, setOpenYears] = useState({})
   const [openPeriods, setOpenPeriods] = useState({})
+  const { download: watermarkDownload } = useWatermarkDownload()
 
   const tabs = useMemo(() => {
     if (categories && categories.length > 0) {
@@ -234,13 +236,11 @@ export default function RegionalLayout({ title, banner, categories, subsectionPe
                                     Lihat
                                   </a>
                                   <span className="text-gray-300">|</span>
-                                  <a
-                                    href={item.file || "#"}
-                                    className="text-sm font-semibold text-[#3d5a80] hover:underline px-2"
-                                    download
-                                    rel="noreferrer">
+                                  <button
+                                    onClick={() => watermarkDownload(item.file, `${item.title}.pdf`)}
+                                    className="text-sm font-semibold text-[#3d5a80] hover:underline px-2">
                                     Unduh
-                                  </a>
+                                  </button>
                                 </div>
                               </div>
                             ))}
