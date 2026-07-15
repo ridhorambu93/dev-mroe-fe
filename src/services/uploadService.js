@@ -2,11 +2,7 @@
  * uploadService
  * -------------
  * Abstraksi upload file.
- * 
- * Saat ini:
- * - Image: simpan base64 di localStorage (ukuran kecil, bisa preview)
- * - PDF: TIDAK simpan base64 (terlalu besar untuk localStorage)
- *        → generate URL simulasi, file "tersimpan" secara konseptual
+ * Semua file (image & PDF) disimpan sebagai base64 di localStorage.
  * 
  * Nanti saat Golang API siap, ganti dengan:
  *   const formData = new FormData()
@@ -32,29 +28,17 @@ export const uploadService = {
       if (!file) return reject(new Error("No file provided"))
 
       const id = `upload_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`
-      const isImage = file.type.startsWith("image/")
 
-      if (isImage) {
-        // Image: simpan base64 untuk preview
-        const reader = new FileReader()
-        reader.onload = () => {
-          const url = reader.result
-          const uploads = getUploads()
-          uploads[id] = { url, name: file.name, type: file.type, uploadedAt: new Date().toISOString() }
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(uploads))
-          resolve({ url, id, name: file.name })
-        }
-        reader.onerror = () => reject(new Error("Failed to read file"))
-        reader.readAsDataURL(file)
-      } else {
-        // PDF/doc: simulasi URL (tidak simpan content ke localStorage)
-        const slugName = file.name.replace(/\s+/g, "-").toLowerCase()
-        const url = `#preview:${slugName}`
+      const reader = new FileReader()
+      reader.onload = () => {
+        const url = reader.result
         const uploads = getUploads()
         uploads[id] = { url, name: file.name, type: file.type, uploadedAt: new Date().toISOString() }
         localStorage.setItem(STORAGE_KEY, JSON.stringify(uploads))
         resolve({ url, id, name: file.name })
       }
+      reader.onerror = () => reject(new Error("Failed to read file"))
+      reader.readAsDataURL(file)
     })
   },
 
