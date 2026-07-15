@@ -4,9 +4,11 @@ import { FaFilePdf } from "react-icons/fa"
 import { ChevronUp, ChevronDown, ChevronLeft, ChevronRight } from "lucide-react"
 import { slugify } from "../../utils/slugify"
 import { parseDateToPeriod, DEFAULT_SUBSECTION_PERIODS } from "../../config/periodConfig"
+import { useWatermarkDownload } from "../../hooks/useWatermarkDownload"
 
 function SubsectionBanner({ bannerData, fallback }) {
   const [slideIndex, setSlideIndex] = useState(0)
+
 
   useEffect(() => {
     if (bannerData?.type !== "slider" || !bannerData?.files?.length) return
@@ -90,6 +92,7 @@ export default function PublikasiLayout({ title, banner, categories, gridCategor
   const [search, setSearch] = useState("")
   const [openYears, setOpenYears] = useState({})
   const [openPeriods, setOpenPeriods] = useState({})
+  const { download: watermarkDownload, loading: watermarkLoading } = useWatermarkDownload()
 
   const tabs = useMemo(() => {
     if (categories && categories.length > 0) {
@@ -234,8 +237,8 @@ export default function PublikasiLayout({ title, banner, categories, gridCategor
                           )}
                         </button>
 
-                        {openPeriods[key] && (
-                          isGridLayout ? (
+                        {openPeriods[key] &&
+                          (isGridLayout ? (
                             <div className="p-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
                               {items.map((item) => (
                                 <div
@@ -245,13 +248,11 @@ export default function PublikasiLayout({ title, banner, categories, gridCategor
                                   <span className="text-sm text-gray-600 flex-1 truncate">
                                     {item.title}
                                   </span>
-                                  <a
-                                    href={item.file || "#"}
-                                    className="text-sm font-bold text-[#3d5a80] hover:underline shrink-0"
-                                    target="_blank"
-                                    rel="noreferrer">
+                                  <button
+                                    onClick={() => watermarkDownload(item.file, `${item.title}.pdf`)}
+                                    className="text-sm font-bold text-[#3d5a80] hover:underline shrink-0">
                                     Unduh
-                                  </a>
+                                  </button>
                                 </div>
                               ))}
                             </div>
@@ -271,10 +272,21 @@ export default function PublikasiLayout({ title, banner, categories, gridCategor
                                   key={item.id}
                                   className="flex flex-col md:grid md:grid-cols-[auto_1fr_1fr_1fr_1fr_auto] gap-2 md:gap-4 items-start md:items-center border rounded-lg px-4 py-3 bg-white hover:bg-gray-50">
                                   <FaFilePdf className="text-red-500 text-2xl shrink-0" />
-                                  <span className="text-sm font-medium text-slate-700">{item.title}</span>
-                                  <span className="text-sm text-gray-500">{item.description || "-"}</span>
-                                  <span className="text-sm text-gray-500">{item.publishDate || (item.startDate ? `${item.startDate} - ${item.endDate}` : "-")}</span>
-                                  <span className="text-sm text-gray-500">{item.author || "-"}</span>
+                                  <span className="text-sm font-medium text-slate-700">
+                                    {item.title}
+                                  </span>
+                                  <span className="text-sm text-gray-500">
+                                    {item.description || "-"}
+                                  </span>
+                                  <span className="text-sm text-gray-500">
+                                    {item.publishDate ||
+                                      (item.startDate
+                                        ? `${item.startDate} - ${item.endDate}`
+                                        : "-")}
+                                  </span>
+                                  <span className="text-sm text-gray-500">
+                                    {item.author || "-"}
+                                  </span>
                                   <div className="flex items-center shrink-0">
                                     <a
                                       href={item.file || "#"}
@@ -284,19 +296,23 @@ export default function PublikasiLayout({ title, banner, categories, gridCategor
                                       Lihat
                                     </a>
                                     <span className="text-gray-300">|</span>
-                                    <a
+                                    {/* <a
                                       href={item.file || "#"}
                                       className="text-sm font-semibold text-[#3d5a80] hover:underline px-2"
                                       download
                                       rel="noreferrer">
                                       Unduh
-                                    </a>
+                                    </a> */}
+                                    <button
+                                      onClick={() => watermarkDownload(item.file, `${item.title}.pdf`)}
+                                      className="text-sm font-semibold text-[#3d5a80] hover:underline px-2">
+                                      Unduh
+                                    </button>
                                   </div>
                                 </div>
                               ))}
                             </div>
-                          )
-                        )}
+                          ))}
                       </div>
                     )
                   })}

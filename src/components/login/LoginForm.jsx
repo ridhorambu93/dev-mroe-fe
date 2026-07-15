@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { useAuth } from "../../store/AuthContext"
+import { userService } from "../../services/userService"
 
 import Input from "../Input"
 import Button from "../Button"
@@ -12,26 +13,29 @@ const LoginForm = () => {
   const navigate = useNavigate()
   const { login } = useAuth()
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-
     if (!username || !password) {
       alert("Username dan password wajib diisi")
       return
     }
 
-    const role = username.toLowerCase() === "admin" ? "ADMIN" : "USER"
+    const users = await userService.getAll()
+    const found = users.find((u) => u.username === username)
+
+    if (!found) {
+      alert("Username atau password salah")
+      return
+    }
 
     login({
-      username,
-      role,
+      username: found.username,
+      role: found.role,
+      fullName: found.fullName,
+      divisi: found.divisi,
     })
 
-    if (role === "ADMIN") {
-      navigate("/admin")
-    } else {
-      navigate("/home")
-    }
+    navigate(found.role === "ADMIN" ? "/admin" : "/home")
   }
 
   return (
