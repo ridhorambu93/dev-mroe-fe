@@ -2,7 +2,7 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [ "main", "development" ] # Trigger berjalan saat push ke main atau master
+    branches: [ "development" ] # Trigger berjalan saat push ke development
   workflow_dispatch: # Mengizinkan tombol klik manual dari web GitHub
 
 # Mengatur izin token GitHub khusus untuk pembuatan Pages
@@ -34,14 +34,16 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
+        working-directory: bjb-mroe-fe
 
       - name: Build Website
         run: npm run build
+        working-directory: bjb-mroe-fe
 
       - name: Upload Artifacts
         uses: actions/upload-pages-artifact@v3
         with:
-          path: dist # Folder output bawaan dari Vite build
+          path: bjb-mroe-fe/dist
 
       - name: Deploy to GitHub Pages
         id: deployment
