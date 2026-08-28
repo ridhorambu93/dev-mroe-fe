@@ -1,4 +1,5 @@
 import { Outlet, NavLink, useNavigate, useLocation } from "react-router-dom"
+import { toast } from "sonner"
 import { useAuth } from "../store/AuthContext"
 
 const sidebarMenus = [
@@ -22,13 +23,14 @@ const AdminLayout = () => {
 
   const handleLogout = () => {
     logout()
+    toast.success("Berhasil logout")
     navigate("/")
   }
 
   return (
     <div className="min-h-screen flex">
       {/* SIDEBAR */}
-      <aside className="w-64 bg-slate-900 text-white flex flex-col">
+      <aside className="w-64 bg-slate-900 text-white flex flex-col animate-slide-in-left">
         {/* Sidebar Header */}
         <div className="px-5 py-5 border-b border-slate-700">
           <h2 className="font-bold text-lg">Admin Panel</h2>
@@ -100,7 +102,7 @@ const AdminLayout = () => {
         </header>
 
         {/* Page Content */}
-        <div className="p-6">
+        <div className="p-6 animate-fade-in">
           <Outlet />
         </div>
       </main>

@@ -38,14 +38,14 @@ const HomePage = () => {
   return (
     <div className="max-w-6xl mx-auto px-4 md:px-6 py-10">
       {/* WELCOME */}
-      <section className="text-center mb-10">
+      <section className="text-center mb-10 animate-fade-in-up">
         <h1 className="text-2xl md:text-4xl font-medium text-slate-800">
           {config?.welcomeText || "Selamat datang di situs Research and Office of Economist bank bjb"}
         </h1>
       </section>
 
       {/* INDICATOR IMAGE */}
-      <section className="bg-white border rounded-lg p-4 mb-12">
+      <section className="bg-white border rounded-lg p-4 mb-12 animate-fade-in-up" style={{ animationDelay: "0.1s" }}>
         <h2 className="font-semibold text-[#00549F] mb-4">
           {config?.indicatorTitle || "Data Indikator"}
         </h2>
@@ -57,7 +57,7 @@ const HomePage = () => {
       </section>
 
       {/* DOCUMENTS */}
-      <section>
+      <section className="animate-fade-in-up" style={{ animationDelay: "0.2s" }}>
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-3">
           <h2 className="font-semibold text-[#00549F]">Dokumen Upload Terbaru</h2>
           <input

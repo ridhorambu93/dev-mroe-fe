@@ -42,8 +42,8 @@ export default function Navbar() {
     <div className="absolute right-0 mt-2 w-44 bg-white text-slate-800 rounded-lg shadow-lg overflow-hidden z-50">
       <button
         className="block w-full text-left px-4 py-3 text-sm hover:bg-gray-100"
-        onClick={() => { navigate("/home"); setProfileOpen(false) }}>
-        Beranda
+        onClick={() => { navigate(user?.role === "ADMIN" ? "/admin/profile" : "/profile"); setProfileOpen(false) }}>
+        Profil Saya
       </button>
       {user?.role === "ADMIN" && (
         <button

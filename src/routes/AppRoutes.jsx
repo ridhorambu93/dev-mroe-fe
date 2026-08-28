@@ -1,4 +1,7 @@
-import { BrowserRouter, Routes, Route, Outlet } from "react-router-dom"
+import { BrowserRouter, Routes, Route, Outlet, useLocation } from "react-router-dom"
+import { useEffect, useRef } from "react"
+import NProgress from "nprogress"
+import "nprogress/nprogress.css"
 
 import LoginPage from "../pages/LoginPage.jsx"
 import HomePage from "../pages/HomePage.jsx"
@@ -12,6 +15,7 @@ import RegionalPage from "../pages/Regional/RegionalPage.jsx"
 import DailyMarketPage from "../pages/DailyMarketDashboard/DailyMarketPage.jsx"
 import OutlookForumPage from "../pages/OutlookForum/OutlookForumPage.jsx"
 import MarketIntelligencePage from "../pages/MarketIntelligence/MarketIntelligencePage.jsx"
+import UserProfilePage from "../pages/Profile/UserProfilePage.jsx"
 
 // Admin pages
 import AdminDashboard from "../pages/Admin/AdminDashboard.jsx"
@@ -23,6 +27,24 @@ import AdminSettings from "../pages/Admin/AdminSettings.jsx"
 import MainLayout from "../layouts/MainLayout.jsx"
 import AdminLayout from "../layouts/AdminLayout.jsx"
 import ProtectedRoute from "./ProtectedRoute.jsx"
+
+NProgress.configure({ showSpinner: false, speed: 300, minimum: 0.1 })
+
+function RouteProgressBar() {
+  const location = useLocation()
+  const prev = useRef(null)
+
+  useEffect(() => {
+    if (prev.current !== location.pathname) {
+      NProgress.start()
+      const t = setTimeout(() => NProgress.done(), 300)
+      prev.current = location.pathname
+      return () => clearTimeout(t)
+    }
+  }, [location])
+
+  return null
+}
 
 const USER_ROLES = ["USER", "ADMIN"]
 const ADMIN_ROLES = ["ADMIN"]
@@ -44,6 +66,7 @@ function UserLayout() {
 const AppRoutes = () => {
   return (
     <BrowserRouter basename="/dev-mroe-fe">
+      <RouteProgressBar />
       <Routes>
         {/* LOGIN */}
         <Route path="/" element={<LoginPage />} />
@@ -58,6 +81,7 @@ const AppRoutes = () => {
           <Route path="/daily-market-dashboard" element={<DailyMarketPage />} />
           <Route path="/outlook-economic-forum" element={<OutlookForumPage />} />
           <Route path="/market-intelligence" element={<MarketIntelligencePage />} />
+          <Route path="/profile" element={<UserProfilePage />} />
         </Route>
 
         {/* ADMIN AREA */}

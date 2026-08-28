@@ -1,8 +1,7 @@
 const BASE_URL = import.meta.env.VITE_API_BASE_URL || ""
 
-// Validasi BASE_URL hanya boleh http/https dan bukan internal IP
+// Validasi BASE_URL hanya boleh http/https
 const ALLOWED_PROTOCOLS = ["http:", "https:"]
-const BLOCKED_HOSTS = /^(localhost$|127\.|10\.|192\.168\.|172\.(1[6-9]|2\d|3[01])\.|169\.254\.)/
 
 function validateBaseUrl(url) {
   if (!url) throw new Error("VITE_API_BASE_URL tidak dikonfigurasi")
@@ -10,8 +9,6 @@ function validateBaseUrl(url) {
     const parsed = new URL(url)
     if (!ALLOWED_PROTOCOLS.includes(parsed.protocol))
       throw new Error("Protocol tidak diizinkan")
-    if (BLOCKED_HOSTS.test(parsed.hostname) && import.meta.env.PROD)
-      throw new Error("Host tidak diizinkan di production")
   } catch {
     throw new Error("VITE_API_BASE_URL tidak valid")
   }
@@ -39,8 +36,9 @@ async function request(path, options = {}) {
     ...restOptions,
   })
 
-  if (!res.ok) throw new Error(`HTTP ${res.status}: ${res.statusText}`)
-  return res.json()
+  const json = await res.json()
+  if (!res.ok) throw new Error(json?.message || `HTTP ${res.status}`)
+  return json
 }
 
 export const apiClient = {

@@ -1,14 +1,15 @@
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
+import { toast } from "sonner"
 import { useAuth } from "../../store/AuthContext"
-import { userService } from "../../services/userService"
-
+import { apiClient } from "../../utils/apiClient"
 import Input from "../Input"
 import Button from "../Button"
 
 const LoginForm = () => {
   const [username, setUsername] = useState("")
   const [password, setPassword] = useState("")
+  const [loading, setLoading] = useState(false)
 
   const navigate = useNavigate()
   const { login } = useAuth()
@@ -16,30 +17,41 @@ const LoginForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault()
     if (!username || !password) {
-      alert("Username dan password wajib diisi")
+      toast.error("Username dan password wajib diisi")
       return
     }
 
-    const users = await userService.getAll()
-    const found = users.find((u) => u.username === username)
-
-    if (!found) {
-      alert("Username atau password salah")
-      return
+    setLoading(true)
+    try {
+      const res = await apiClient.post("/api/auth/login", { username, password})
+        const {token, refresh_token, user} = res.data
+        
+      login({
+          username: user.username,
+          role: user.role,
+          fullName: user.full_name,
+          email: user.email,
+        },
+        token,
+        refresh_token,
+      )
+      
+    toast.success(`Selamat datang, ${user.full_name || user.username}!`)
+    navigate(user.role === "ADMIN" ? "/admin" : "/home")
+    } catch (err) {
+      const isNetworkError = err instanceof TypeError && err.message.includes("fetch")
+      if (isNetworkError) {
+        toast.error("Tidak dapat terhubung ke server. Periksa koneksi Anda.")
+      } else {
+        toast.error(err.message || "Username atau password salah")
+      }
+    } finally {
+      setLoading(false)
     }
-
-    login({
-      username: found.username,
-      role: found.role,
-      fullName: found.fullName,
-      divisi: found.divisi,
-    })
-
-    navigate(found.role === "ADMIN" ? "/admin" : "/home")
   }
 
   return (
-    <div className="max-w-md mx-auto py-8">
+    <div className="max-w-md mx-auto py-8 animate-fade-in-up">
       <h1 className="text-4xl font-medium mb-4">
         Selamat datang di situs Research and Office of Economist bank bjb
       </h1>
@@ -67,8 +79,14 @@ const LoginForm = () => {
         <div className="flex justify-center">
           <Button
             type="submit"
-            className="bg-yellow-400 hover:bg-yellow-500 px-10 py-3 rounded-lg">
-            Sign In
+            disabled={loading}
+            className="bg-yellow-400 hover:bg-yellow-500 px-10 py-3 rounded-lg disabled:opacity-60 transition-all duration-200">
+            {loading ? (
+              <span className="flex items-center gap-2">
+                <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                Masuk...
+              </span>
+            ) : "Sign In"}
           </Button>
         </div>
       </form>

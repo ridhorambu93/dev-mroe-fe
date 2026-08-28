@@ -1,0 +1,19 @@
+ index.html                         |   2 [32m+[m[31m-[m
+ package-lock.json                  |  20 [32m++++[m[31m-[m
+ package.json                       |   4 [32m+[m[31m-[m
+ src/App.jsx                        |   8 [32m+[m[31m-[m
+ src/components/Navbar.jsx          |   4 [32m+[m[31m-[m
+ src/components/login/LoginForm.jsx |  60 [32m++++++++[m[31m-----[m
+ src/index.css                      |  11 [32m++[m[31m-[m
+ src/layouts/AdminLayout.jsx        |   6 [32m+[m[31m-[m
+ src/layouts/MainLayout.jsx         |   4 [32m+[m[31m-[m
+ src/main.jsx                       |   4 [32m+[m[31m-[m
+ src/pages/Admin/AdminProfile.jsx   | 172 [32m+[m[31m------------------------------------[m
+ src/pages/HomePage.jsx             |   6 [32m+[m[31m-[m
+ src/pages/LoginPage.jsx            |   2 [32m+[m[31m-[m
+ src/routes/AppRoutes.jsx           |  26 [32m+++++[m[31m-[m
+ src/services/userService.js        |   8 [32m+[m[31m-[m
+ src/store/AuthContext.jsx          |  33 [32m+++[m[31m----[m
+ src/utils/apiClient.js             |  10 [32m+[m[31m--[m
+ tailwind.config.js                 |  22 [32m++++[m[31m-[m
+ 18 files changed, 167 insertions(+), 235 deletions(-)
