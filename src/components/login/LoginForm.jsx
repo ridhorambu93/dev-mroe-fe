@@ -53,7 +53,7 @@ const LoginForm = () => {
   return (
     <div className="max-w-md mx-auto py-8 animate-fade-in-up">
       <h1 className="text-4xl font-medium mb-4">
-        Selamat datang di situs Research and Office of Economist bank bjb
+        Sistem Informasi <br/> Global Market & Analytics
       </h1>
 
       <p className="text-gray-600 mb-10">
@@ -86,7 +86,9 @@ const LoginForm = () => {
                 <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
                 Masuk...
               </span>
-            ) : "Sign In"}
+            ) : (
+              "Sign In"
+            )}
           </Button>
         </div>
       </form>

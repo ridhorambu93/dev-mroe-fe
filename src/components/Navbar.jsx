@@ -2,7 +2,7 @@ import { useAuth } from "../store/AuthContext"
 import { useState, useRef, useEffect } from "react"
 import { useNavigate, Link } from "react-router-dom"
 import { NAV_MENUS } from "../config/navConfig"
-import roeLogo from "../assets/images/logo-home-roe.png"
+import bjbSigmaLogo from "../assets/images/bjb-sigma-logo.png"
 import bjbLogo from "../assets/images/bjb-logo.png"
 
 export default function Navbar() {
@@ -66,13 +66,11 @@ export default function Navbar() {
       <div className="px-6 py-3 flex items-center justify-between">
         {/* Logo Brand */}
         <Link to="/home" className="shrink-0 flex items-center">
-          <img src={roeLogo} alt="Research Office Economist" className="h-10 object-contain" />
-          <p className="text-[10px] leading-tight">
-            Research and <br />
-            Office of <br />
-            Economist
-          </p>
-          <div className="border-l border-white pl-1 h-10 ml-1"></div>
+          <img
+            src={bjbSigmaLogo}
+            alt="Bjb Sigma"
+            className="h-10 object-contain  mix-blend-multiply"
+          />
           <img src={bjbLogo} alt="Bank BJB" className="h-10 object-contain" />
         </Link>
 
@@ -107,7 +105,9 @@ export default function Navbar() {
         <div className="flex items-center gap-3">
           {/* PROFILE (Desktop) */}
           {user && (
-            <div className="hidden lg:flex items-center gap-3" ref={desktopProfileRef}>
+            <div
+              className="hidden lg:flex items-center gap-3"
+              ref={desktopProfileRef}>
               <div className="text-right">
                 <p className="text-xs font-medium">{user.username}</p>
                 <p className="text-[10px] opacity-80">{user.role}</p>
@@ -140,9 +140,15 @@ export default function Navbar() {
             className="lg:hidden flex flex-col gap-1.5 p-2"
             onClick={() => setMobileOpen(!mobileOpen)}
             aria-label="Toggle menu">
-            <span className={`block w-6 h-0.5 bg-white transition-transform ${mobileOpen ? "rotate-45 translate-y-2" : ""}`} />
-            <span className={`block w-6 h-0.5 bg-white transition-opacity ${mobileOpen ? "opacity-0" : ""}`} />
-            <span className={`block w-6 h-0.5 bg-white transition-transform ${mobileOpen ? "-rotate-45 -translate-y-2" : ""}`} />
+            <span
+              className={`block w-6 h-0.5 bg-white transition-transform ${mobileOpen ? "rotate-45 translate-y-2" : ""}`}
+            />
+            <span
+              className={`block w-6 h-0.5 bg-white transition-opacity ${mobileOpen ? "opacity-0" : ""}`}
+            />
+            <span
+              className={`block w-6 h-0.5 bg-white transition-transform ${mobileOpen ? "-rotate-45 -translate-y-2" : ""}`}
+            />
           </button>
         </div>
       </div>
