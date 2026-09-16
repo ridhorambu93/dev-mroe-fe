@@ -2,7 +2,7 @@ import { useAuth } from "../store/AuthContext"
 import { useState, useRef, useEffect } from "react"
 import { useNavigate, Link } from "react-router-dom"
 import { NAV_MENUS } from "../config/navConfig"
-import bjbSigmaLogo from "../assets/images/bjb-sigma-logo.png"
+import bjbSigmaLogo from "../assets/images/bjb-sigma-logo-white.png"
 import bjbLogo from "../assets/images/bjb-logo.png"
 
 export default function Navbar() {
@@ -69,7 +69,7 @@ export default function Navbar() {
           <img
             src={bjbSigmaLogo}
             alt="Bjb Sigma"
-            className="h-10 object-contain  mix-blend-multiply"
+            className="h-10 object-contain"
           />
           <img src={bjbLogo} alt="Bank BJB" className="h-10 object-contain" />
         </Link>

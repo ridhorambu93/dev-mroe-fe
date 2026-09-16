@@ -19,6 +19,10 @@ import UserProfilePage from "../pages/Profile/UserProfilePage.jsx"
 
 // Admin pages
 import AdminDashboard from "../pages/Admin/AdminDashboard.jsx"
+import AdminDashboardNew from "../pages/Admin/AdminDashboardNew.jsx"
+
+// Ganti AdminDashboardNew <-> AdminDashboard sesuai kebutuhan
+const ActiveDashboard = AdminDashboardNew
 import AdminProfile from "../pages/Admin/AdminProfile.jsx"
 import AdminPublikasi from "../pages/Admin/AdminPublikasi.jsx"
 import AdminUsers from "../pages/Admin/AdminUsers.jsx"
@@ -93,7 +97,7 @@ const AppRoutes = () => {
             </ProtectedRoute>
           }
         >
-          <Route index element={<AdminDashboard />} />
+          <Route index element={<ActiveDashboard />} />
           <Route path="publikasi" element={<AdminPublikasi />} />
           <Route path="users" element={<AdminUsers />} />
           <Route path="settings" element={<AdminSettings />} />
