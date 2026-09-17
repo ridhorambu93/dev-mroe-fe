@@ -1,24 +1,18 @@
 import { useEffect, useState } from "react"
 import { makroEkonomiService } from "../../services/makroEkonomiService"
-import { pageService } from "../../services/pageService"
+import { PAGE_CONFIGS } from "../../services/pageService"
 import PublikasiLayout from "../../components/publications/PublikasiLayout"
 
-const CATEGORIES = ["Macro brief", "Ekonomi Makro"]
-const GRID_CATEGORIES = ["Macro brief", "Ekonomi Makro"]
+const PAGE = PAGE_CONFIGS.find((p) => p.slug === "/makro-ekonomi")
 
 export default function MakroEkonomiPage() {
   const [data, setData] = useState([])
-  const [pageConfig, setPageConfig] = useState(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     let active = true
-    Promise.all([makroEkonomiService.getAll(), pageService.getAll()])
-      .then(([docs, pages]) => {
-        if (!active) return
-        setData(docs || [])
-        setPageConfig(pages.find((p) => p.slug === "/makroekonomi"))
-      })
+    makroEkonomiService.getAll()
+      .then((docs) => { if (active) setData(docs || []) })
       .finally(() => active && setLoading(false))
     return () => { active = false }
   }, [])
@@ -26,10 +20,9 @@ export default function MakroEkonomiPage() {
   return (
     <PublikasiLayout
       title="Makro Ekonomi"
-      categories={CATEGORIES}
-      gridCategories={GRID_CATEGORIES}
-      subsectionPeriods={pageConfig?.subsectionPeriods}
-      subsectionBanners={pageConfig?.subsectionBanners}
+      categories={PAGE.categories}
+      gridCategories={PAGE.gridCategories}
+      subsectionPeriods={PAGE.subsectionPeriods}
       data={data}
       loading={loading}
     />

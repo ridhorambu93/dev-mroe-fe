@@ -6,10 +6,12 @@ import { marketIntelligenceService } from "./marketIntelligenceService"
 import { outlookForumService } from "./outlookForumService"
 import { getDocumentService } from "./documentServiceFactory"
 
+
+// implementasi slug untuk akses konstanta statis pada pageService.js
 const registeredServices = {
   "/publikasi": publicationService,
-  "/makroekonomi": makroEkonomiService,
-  "/industry": industriService,
+  "/makro-ekonomi": makroEkonomiService,
+  "/industri": industriService,
   "/regional": regionalService,
   "/market-intelligence": marketIntelligenceService,
   "/outlook-economic-forum": outlookForumService,

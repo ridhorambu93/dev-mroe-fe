@@ -2,7 +2,10 @@ import { Navigate } from "react-router-dom"
 import { useAuth } from "../store/AuthContext"
 
 const ProtectedRoute = ({ children, allowedRoles = [] }) => {
-  const { user } = useAuth()
+  const { user, authReady } = useAuth()
+
+  // Tunggu verifikasi session selesai sebelum render/redirect
+  if (!authReady) return null
 
   if (!user) {
     return <Navigate to="/" replace />

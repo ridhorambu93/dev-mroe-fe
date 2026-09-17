@@ -5,20 +5,14 @@
  * Frontend parse otomatis ke bulan/triwulan/semester/tahun
  * berdasarkan period type subsection.
  *
- * periodType:
- *   "monthly"    → 1 date → extract bulan + tahun
- *   "quarterly"  → 1 date → hitung triwulan + tahun
- *   "semester"   → 1 date → hitung semester + tahun
- *   "yearly"     → 1 date → extract tahun
- *   "event"      → 2 dates → tanggal mulai + selesai
  */
 
 export const PERIOD_TYPES = {
-  monthly: { label: "Bulanan" },
-  quarterly: { label: "Triwulan" },
-  semester: { label: "Semester" },
-  yearly: { label: "Tahunan" },
-  event: { label: "By Event" },
+  Bulanan: { label: "Bulanan" },
+  Triwulan: { label: "Triwulan" },
+  Semester: { label: "Semester" },
+  Tahunan: { label: "Tahunan" },
+  "By Event": { label: "By Event" },
 }
 
 const MONTH_NAMES = [
@@ -30,7 +24,7 @@ const MONTH_NAMES = [
  * Build form fields — admin cuma input date.
  */
 export function buildPeriodFields(periodType) {
-  if (periodType === "event") {
+  if (periodType === "By Event") {
     return [
       { name: "startDate", label: "Tanggal Mulai", type: "date", required: true, table: true },
       { name: "endDate", label: "Tanggal Selesai", type: "date", required: true, table: true },
@@ -54,17 +48,17 @@ export function parseDateToPeriod(dateStr, periodType) {
   const monthIdx = d.getMonth() // 0-11
 
   switch (periodType) {
-    case "monthly":
+    case "Bulanan":
       return { year, period: MONTH_NAMES[monthIdx] }
-    case "quarterly": {
+    case "Triwulan": {
       const q = Math.floor(monthIdx / 3) + 1
       return { year, period: `Triwulan ${["I", "II", "III", "IV"][q - 1]}` }
     }
-    case "semester": {
+    case "Semester": {
       const s = monthIdx < 6 ? 1 : 2
       return { year, period: `Semester ${s}` }
     }
-    case "yearly":
+    case "Tahunan":
       return { year, period: null }
     default:
       return { year, period: MONTH_NAMES[monthIdx] }
@@ -75,17 +69,18 @@ export function parseDateToPeriod(dateStr, periodType) {
  * Default subsection period mapping.
  */
 export const DEFAULT_SUBSECTION_PERIODS = {
-  "Daily Economic": "monthly",
-  "Bjb Business Insight": "quarterly",
-  "Lainnya": "quarterly",
-  "Macro brief": "quarterly",
-  "Ekonomi Makro": "quarterly",
-  "Positioning": "monthly",
-  "Market Share": "monthly",
-  "Rasio Industri": "semester",
-  "Kajian NPL": "semester",
-  "Mapping Ekonomi": "quarterly",
-  "Pemetaan Sektoral Ekonomi & Kredit Perbankan": "quarterly",
-  "Kajian": "event",
-  "Materi": "event",
+  "Daily Economic": "Bulanan",
+  "Bjb Business Insight": "Triwulan",
+  "Lainnya": "Triwulan",
+  "Macro brief": "Triwulan",
+  "Ekonomi Makro": "Triwulan",
+  "Positioning": "Bulanan",
+  "Market Share": "Bulanan",
+  "Rasio Industri": "Semester",
+  "Kajian NPL": "Semester",
+  "Mapping Ekonomi": "Triwulan",
+  "Pemetaan Sektoral Ekonomi & Kredit Perbankan": "Triwulan",
+  "Kajian": "By Event",
+  "Materi": "By Event",
 }
+

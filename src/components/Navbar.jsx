@@ -71,6 +71,7 @@ export default function Navbar() {
             alt="Bjb Sigma"
             className="h-10 object-contain"
           />
+          {/* <div className="border-l border-white pl-1 h-10 ml-1"></div> */}
           <img src={bjbLogo} alt="Bank BJB" className="h-10 object-contain" />
         </Link>
 

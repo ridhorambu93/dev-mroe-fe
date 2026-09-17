@@ -1,20 +1,19 @@
 import { useState, useMemo, useEffect } from "react"
-import { usePages, useDocuments, useDocumentMutations, usePageMutation } from "../../hooks/useQueryHooks"
+import { useDocuments, useDocumentMutations } from "../../hooks/useQueryHooks"
 import { buildPeriodFields, PERIOD_TYPES, DEFAULT_SUBSECTION_PERIODS } from "../../config/periodConfig"
 import { Plus, Pencil, Trash2, Search, Info } from "lucide-react"
 import FormModal from "../../components/admin/FormModal"
 import ConfirmDialog from "../../components/admin/ConfirmDialog"
 import Pagination from "../../components/admin/Pagination"
 import HomeConfigEditor from "../../components/admin/HomeConfigEditor"
-import SubsectionBannerEditor from "../../components/admin/SubsectionBannerEditor"
 import ImageUpload from "../../components/admin/ImageUpload"
+import { PAGE_CONFIGS } from "../../services/pageService"
 import { dailyMarketDashboardService } from "../../services/dailyMarketDashboardService"
 
 const PAGE_SIZE = 10
 
 export default function AdminPublikasi() {
-  const { data: pages = [] } = usePages()
-  const sortedPages = useMemo(() => [...pages].sort((a, b) => a.id - b.id), [pages])
+  const sortedPages = [...PAGE_CONFIGS].sort((a, b) => a.id - b.id)
 
   const [activeSection, setActiveSection] = useState("beranda")
 
@@ -110,7 +109,6 @@ function Toast({ message, type, onClose }) {
 function SectionContent({ page }) {
   const { data: docs = [], isLoading } = useDocuments(page.slug)
   const { createDoc, updateDoc, removeDoc } = useDocumentMutations(page.slug)
-  const updatePage = usePageMutation()
 
   const [activeSubsection, setActiveSubsection] = useState(page.categories?.[0] || null)
   const [search, setSearch] = useState("")
@@ -128,23 +126,9 @@ function SectionContent({ page }) {
   const subsections = page.categories || []
   const subsectionPeriods = page.subsectionPeriods || {}
 
-  const handlePeriodChange = async (sub, newType) => {
-    const updated = { ...subsectionPeriods, [sub]: newType }
-    await updatePage.mutateAsync({ id: page.id, data: { subsectionPeriods: updated } })
-    showToast(`Periode "${sub}" diubah ke ${PERIOD_TYPES[newType]?.label}`)
-  }
-
-  const subsectionBanners = page.subsectionBanners || {}
-
-  const handleBannerSave = async (sub, bannerData) => {
-    const updated = { ...subsectionBanners, [sub]: bannerData }
-    await updatePage.mutateAsync({ id: page.id, data: { subsectionBanners: updated } })
-    showToast(`Banner "${sub}" berhasil disimpan!`)
-  }
-
   const periodType = (PERIOD_TYPES[subsectionPeriods[activeSubsection]] ? subsectionPeriods[activeSubsection] : null)
     || DEFAULT_SUBSECTION_PERIODS[activeSubsection]
-    || "monthly"
+    || "Bulanan"
 
   const fields = useMemo(() => {
     const base = [
@@ -230,41 +214,18 @@ function SectionContent({ page }) {
           </thead>
           <tbody>
             {subsections.map((sub) => {
-              const pt = subsectionPeriods[sub] || DEFAULT_SUBSECTION_PERIODS[sub] || "monthly"
+              const pt = subsectionPeriods[sub] || DEFAULT_SUBSECTION_PERIODS[sub] || "Bulanan"
               const count = docs.filter((d) => d.category === sub).length
               return (
                 <tr key={sub} className="border-b last:border-0 hover:bg-gray-50">
                   <td className="px-4 py-2 font-medium text-slate-700">{sub}</td>
-                  <td className="px-4 py-2">
-                    <select
-                      value={pt}
-                      onChange={(e) => handlePeriodChange(sub, e.target.value)}
-                      className="border rounded-md px-2 py-1 text-sm bg-white text-slate-700"
-                    >
-                      {Object.entries(PERIOD_TYPES).map(([key, { label }]) => (
-                        <option key={key} value={key}>{label}</option>
-                      ))}
-                    </select>
-                  </td>
+                  <td className="px-4 py-2 text-slate-700">{PERIOD_TYPES[pt]?.label || pt}</td>
                   <td className="px-4 py-2 text-slate-500">{count}</td>
                 </tr>
               )
             })}
           </tbody>
         </table>
-      </div>
-
-      {/* SUBSECTION BANNERS */}
-      <div className="space-y-3">
-        <h3 className="text-sm font-semibold text-slate-600">Banner per Subsection</h3>
-        {subsections.map((sub) => (
-          <SubsectionBannerEditor
-            key={sub}
-            subsection={sub}
-            bannerData={subsectionBanners[sub]}
-            onSave={handleBannerSave}
-          />
-        ))}
       </div>
 
       {/* SUBSECTION TABS */}

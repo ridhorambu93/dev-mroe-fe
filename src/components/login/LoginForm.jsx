@@ -23,21 +23,23 @@ const LoginForm = () => {
 
     setLoading(true)
     try {
-      const res = await apiClient.post("/api/auth/login", { username, password})
-        const {token, refresh_token, user} = res.data
-        
-      login({
+      const res = await apiClient.post("/api/auth/login", { username, password })
+      const { csrf_token, user } = res.data
+
+      login(
+        {
+          id: user.id,
           username: user.username,
           role: user.role,
           fullName: user.full_name,
           email: user.email,
+          jabatan: user.jabatan,
         },
-        token,
-        refresh_token,
+        csrf_token,
       )
-      
-    toast.success(`Selamat datang, ${user.full_name || user.username}!`)
-    navigate(user.role === "ADMIN" ? "/admin" : "/home")
+
+      toast.success(`Selamat datang, ${user.full_name || user.username}!`)
+      navigate(user.role === "ADMIN" ? "/admin" : "/home")
     } catch (err) {
       const isNetworkError = err instanceof TypeError && err.message.includes("fetch")
       if (isNetworkError) {
