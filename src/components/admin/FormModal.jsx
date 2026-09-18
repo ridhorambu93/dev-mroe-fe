@@ -8,13 +8,102 @@ import FileUpload from "./FileUpload"
  * Komponen ini di-remount oleh parent (via `key`) setiap kali dibuka,
  * sehingga state form selalu fresh tanpa perlu useEffect.
  *
- * field: { name, label, type: "text"|"textarea"|"select"|"image", options?, required?, placeholder? }
+ * field: { name, label, type: "text"|"textarea"|"select"|"image"|"tags"|"tags-with-other", options?, required?, placeholder? }
+ * - tags: array of strings, input satu per satu
+ * - tags-with-other: sama seperti tags tapi ada opsi dropdown + "Lainnya" free text
  */
+
+function TagsInput({ value = [], onChange }) {
+  const [input, setInput] = useState("")
+  const add = () => {
+    const v = input.trim()
+    if (v && !value.includes(v)) onChange([...value, v])
+    setInput("")
+  }
+  return (
+    <div className="space-y-2">
+      <div className="flex gap-2">
+        <input
+          type="text"
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), add())}
+          placeholder="Ketik lalu Enter atau klik Tambah"
+          className="flex-1 border rounded-lg px-3 py-2 text-sm"
+        />
+        <button type="button" onClick={add} className="px-3 py-2 text-sm bg-slate-100 rounded-lg hover:bg-slate-200">Tambah</button>
+      </div>
+      <div className="flex flex-wrap gap-1">
+        {value.map((v) => (
+          <span key={v} className="inline-flex items-center gap-1 px-2 py-0.5 bg-blue-100 text-blue-700 rounded-full text-xs">
+            {v}
+            <button type="button" onClick={() => onChange(value.filter((x) => x !== v))} className="hover:text-red-500">×</button>
+          </span>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+function TagsWithOtherInput({ value = [], onChange, options = [] }) {
+  const [selected, setSelected] = useState("")
+  const [otherText, setOtherText] = useState("")
+  const add = (v) => {
+    const trimmed = v.trim()
+    if (trimmed && !value.includes(trimmed)) onChange([...value, trimmed])
+  }
+  const handleSelect = (v) => {
+    setSelected(v)
+    if (v && v !== "Lainnya") { add(v); setSelected("") }
+  }
+  const handleOtherAdd = () => {
+    add(otherText)
+    setOtherText("")
+    setSelected("")
+  }
+  return (
+    <div className="space-y-2">
+      <div className="flex gap-2">
+        <select value={selected} onChange={(e) => handleSelect(e.target.value)} className="flex-1 border rounded-lg px-3 py-2 text-sm bg-white">
+          <option value="">-- Pilih Unit --</option>
+          {options.map((o) => <option key={o} value={o}>{o}</option>)}
+          <option value="Lainnya">Lainnya...</option>
+        </select>
+      </div>
+      {selected === "Lainnya" && (
+        <div className="flex gap-2">
+          <input
+            type="text"
+            value={otherText}
+            onChange={(e) => setOtherText(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), handleOtherAdd())}
+            placeholder="Nama unit lainnya"
+            className="flex-1 border rounded-lg px-3 py-2 text-sm"
+          />
+          <button type="button" onClick={handleOtherAdd} className="px-3 py-2 text-sm bg-slate-100 rounded-lg hover:bg-slate-200">Tambah</button>
+        </div>
+      )}
+      <div className="flex flex-wrap gap-1">
+        {value.map((v) => (
+          <span key={v} className="inline-flex items-center gap-1 px-2 py-0.5 bg-green-100 text-green-700 rounded-full text-xs">
+            {v}
+            <button type="button" onClick={() => onChange(value.filter((x) => x !== v))} className="hover:text-red-500">×</button>
+          </span>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 export default function FormModal({ title, fields, initialValues, saving, onClose, onSubmit }) {
   const [form, setForm] = useState(() => {
     const base = {}
     fields.forEach((f) => {
-      base[f.name] = initialValues?.[f.name] ?? ""
+      if (f.type === "tags" || f.type === "tags-with-other") {
+        base[f.name] = Array.isArray(initialValues?.[f.name]) ? initialValues[f.name] : []
+      } else {
+        base[f.name] = initialValues?.[f.name] ?? ""
+      }
     })
     return base
   })
@@ -28,8 +117,10 @@ export default function FormModal({ title, fields, initialValues, saving, onClos
   const validate = () => {
     const next = {}
     fields.forEach((f) => {
-      if (f.required && !String(form[f.name] ?? "").trim()) {
-        next[f.name] = `${f.label} wajib diisi`
+      const val = form[f.name]
+      if (f.required) {
+        const isEmpty = Array.isArray(val) ? val.length === 0 : !String(val ?? "").trim()
+        if (isEmpty) next[f.name] = `${f.label} wajib diisi`
       }
     })
     setErrors(next)
@@ -72,6 +163,17 @@ export default function FormModal({ title, fields, initialValues, saving, onClos
                   value={form[field.name] || ""}
                   onChange={(url) => handleChange(field.name, url)}
                 />
+              ) : field.type === "tags" ? (
+                <TagsInput
+                  value={form[field.name] || []}
+                  onChange={(arr) => handleChange(field.name, arr)}
+                />
+              ) : field.type === "tags-with-other" ? (
+                <TagsWithOtherInput
+                  value={form[field.name] || []}
+                  onChange={(arr) => handleChange(field.name, arr)}
+                  options={field.options || []}
+                />
               ) : field.type === "select" ? (
                 <select
                   value={form[field.name] ?? ""}
@@ -85,13 +187,21 @@ export default function FormModal({ title, fields, initialValues, saving, onClos
                   ))}
                 </select>
               ) : field.type === "textarea" ? (
-                <textarea
-                  rows={3}
-                  value={form[field.name] ?? ""}
-                  placeholder={field.placeholder}
-                  onChange={(e) => handleChange(field.name, e.target.value)}
-                  className="w-full border rounded-lg px-3 py-2 text-sm"
-                />
+                <div>
+                  <textarea
+                    rows={3}
+                    value={form[field.name] ?? ""}
+                    placeholder={field.placeholder}
+                    maxLength={field.maxLength}
+                    onChange={(e) => handleChange(field.name, e.target.value)}
+                    className="w-full border rounded-lg px-3 py-2 text-sm"
+                  />
+                  {field.maxLength && (
+                    <p className="text-xs text-slate-400 text-right mt-0.5">
+                      {String(form[field.name] ?? "").length}/{field.maxLength}
+                    </p>
+                  )}
+                </div>
               ) : (
                 <input
                   type={field.type || "text"}

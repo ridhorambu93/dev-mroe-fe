@@ -1,14 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
-import { pageService } from "../services/pageService"
 import { getServiceForSlug } from "../services/serviceRegistry"
-
-/** Fetch all pages */
-export function usePages() {
-  return useQuery({
-    queryKey: ["pages"],
-    queryFn: () => pageService.getAll(),
-  })
-}
 
 /** Fetch documents for a specific page slug */
 export function useDocuments(slug) {
@@ -31,14 +22,5 @@ export function useDocumentMutations(slug) {
   const removeDoc = useMutation({ mutationFn: (id) => service.remove(id), onSuccess: invalidate })
 
   return { createDoc, updateDoc, removeDoc }
-}
-
-/** Mutation to update a page (e.g. subsectionPeriods) */
-export function usePageMutation() {
-  const qc = useQueryClient()
-  return useMutation({
-    mutationFn: ({ id, data }) => pageService.update(id, data),
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["pages"] }),
-  })
 }
 

@@ -19,10 +19,15 @@ import UserProfilePage from "../pages/Profile/UserProfilePage.jsx"
 
 // Admin pages
 import AdminDashboard from "../pages/Admin/AdminDashboard.jsx"
+import AdminDashboardNew from "../pages/Admin/AdminDashboardNew.jsx"
 import AdminProfile from "../pages/Admin/AdminProfile.jsx"
 import AdminPublikasi from "../pages/Admin/AdminPublikasi.jsx"
 import AdminUsers from "../pages/Admin/AdminUsers.jsx"
 import AdminSettings from "../pages/Admin/AdminSettings.jsx"
+import AdminActivity from "../pages/Admin/AdminActivity.jsx"
+import AdminFeedback from "../pages/Admin/AdminFeedback.jsx"
+
+const ActiveDashboard = AdminDashboardNew
 
 import MainLayout from "../layouts/MainLayout.jsx"
 import AdminLayout from "../layouts/AdminLayout.jsx"
@@ -93,9 +98,11 @@ const AppRoutes = () => {
             </ProtectedRoute>
           }
         >
-          <Route index element={<AdminDashboard />} />
+          <Route index element={<ActiveDashboard />} />
           <Route path="publikasi" element={<AdminPublikasi />} />
           <Route path="users" element={<AdminUsers />} />
+          <Route path="activity" element={<AdminActivity />} />
+          <Route path="feedback" element={<AdminFeedback />} />
           <Route path="settings" element={<AdminSettings />} />
           <Route path="profile" element={<AdminProfile />} />
         </Route>
