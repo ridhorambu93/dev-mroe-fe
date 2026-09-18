@@ -1,5 +1,4 @@
 import { createContext, useContext, useState } from "react"
-import { apiClient } from "../utils/apiClient"
 
 const AuthContext = createContext()
 
@@ -8,24 +7,13 @@ export const AuthProvider = ({ children }) => {
     try { return JSON.parse(localStorage.getItem("user")) } catch { return null }
   })
 
-  const login = (userData, token = null, refreshToken = null) => {
+  const login = (userData) => {
     localStorage.setItem("user", JSON.stringify(userData))
-    if (token) localStorage.setItem("token", token)
-    if (refreshToken) localStorage.setItem("refresh_token", refreshToken)
     setUser(userData)
   }
 
-  const logout = async () => {
-    const refreshToken = localStorage.getItem("refresh_token")
-  
-  if (refreshToken) {
-      await apiClient
-        .post("/api/auth/logout", { refresh_token: refreshToken })
-        .catch(() => {})
-    }
-    localStorage.removeItem("refresh_token")
+  const logout = () => {
     localStorage.removeItem("user")
-    localStorage.removeItem("token")
     setUser(null)
   }
 

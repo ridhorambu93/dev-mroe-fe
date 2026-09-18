@@ -2,7 +2,7 @@ import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { toast } from "sonner"
 import { useAuth } from "../../store/AuthContext"
-import { apiClient } from "../../utils/apiClient"
+import { userService } from "../../services/userService"
 import Input from "../Input"
 import Button from "../Button"
 
@@ -23,28 +23,15 @@ const LoginForm = () => {
 
     setLoading(true)
     try {
-      const res = await apiClient.post("/api/auth/login", { username, password})
-        const {token, refresh_token, user} = res.data
-        
-      login({
-          username: user.username,
-          role: user.role,
-          fullName: user.full_name,
-          email: user.email,
-        },
-        token,
-        refresh_token,
-      )
-      
-    toast.success(`Selamat datang, ${user.full_name || user.username}!`)
-    navigate(user.role === "ADMIN" ? "/admin" : "/home")
+      const users = await userService.getAll()
+      const found = users.find((u) => u.username === username)
+      if (!found) throw new Error("Username atau password salah")
+
+      login({ username: found.username, role: found.role, fullName: found.fullName, divisi: found.divisi })
+      toast.success(`Selamat datang, ${found.fullName || found.username}!`)
+      navigate(found.role === "ADMIN" ? "/admin" : "/home")
     } catch (err) {
-      const isNetworkError = err instanceof TypeError && err.message.includes("fetch")
-      if (isNetworkError) {
-        toast.error("Tidak dapat terhubung ke server. Periksa koneksi Anda.")
-      } else {
-        toast.error(err.message || "Username atau password salah")
-      }
+      toast.error(err.message || "Username atau password salah")
     } finally {
       setLoading(false)
     }
