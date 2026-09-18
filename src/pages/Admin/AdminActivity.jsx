@@ -1,8 +1,19 @@
 import { useState, useMemo } from "react"
 import { Search } from "lucide-react"
-import { useQuery } from "@tanstack/react-query"
-import { apiClient } from "../../utils/apiClient"
 import Pagination from "../../components/admin/Pagination"
+
+const SEED = [
+  { id: 1, username: "admin", action: "login", description: "Login berhasil", created_at: "2026-09-10T08:00:00Z" },
+  { id: 2, username: "admin", action: "create", description: "Tambah dokumen: Economic Outlook 2026", created_at: "2026-09-10T08:15:00Z" },
+  { id: 3, username: "admin", action: "update", description: "Update dokumen: Inflation Trend Analysis", created_at: "2026-09-11T09:30:00Z" },
+  { id: 4, username: "budi.santoso", action: "login", description: "Login berhasil", created_at: "2026-09-11T10:00:00Z" },
+  { id: 5, username: "budi.santoso", action: "download", description: "Download: Global Market Projection.pdf", created_at: "2026-09-11T10:05:00Z" },
+  { id: 6, username: "admin", action: "delete", description: "Hapus dokumen: Draft Q1 2025", created_at: "2026-09-12T11:00:00Z" },
+  { id: 7, username: "sari.dewi", action: "login", description: "Login berhasil", created_at: "2026-09-13T07:45:00Z" },
+  { id: 8, username: "sari.dewi", action: "download", description: "Download: Banking Industry Report.pdf", created_at: "2026-09-13T07:50:00Z" },
+  { id: 9, username: "admin", action: "update", description: "Update konfigurasi halaman Publikasi", created_at: "2026-09-14T14:00:00Z" },
+  { id: 10, username: "admin", action: "logout", description: "Logout", created_at: "2026-09-14T17:00:00Z" },
+]
 
 const PAGE_SIZE = 20
 
@@ -27,12 +38,8 @@ export default function AdminActivity() {
   const [search, setSearch] = useState("")
   const [currentPage, setCurrentPage] = useState(1)
 
-  const { data: res, isLoading } = useQuery({
-    queryKey: ["admin-activities"],
-    queryFn: () => apiClient.get("/api/admin/activities"),
-  })
-
-  const activities = res?.data ?? []
+  const activities = SEED
+  const isLoading = false
 
   const filtered = useMemo(() => {
     if (!search.trim()) return activities
