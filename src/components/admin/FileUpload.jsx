@@ -3,7 +3,7 @@ import { Upload, X, FileText } from "lucide-react"
 import { uploadService } from "../../services/uploadService"
 
 const ACCEPTED = ["application/pdf"]
-const MAX_SIZE = 20 * 1024 * 1024 // 20MB
+const MAX_SIZE = 25 * 1024 * 1024 // 25MB
 
 export default function FileUpload({ value, onChange }) {
   const [dragging, setDragging] = useState(false)
@@ -14,7 +14,7 @@ export default function FileUpload({ value, onChange }) {
 
   const validate = (file) => {
     if (!ACCEPTED.includes(file.type)) return "Format harus PDF"
-    if (file.size > MAX_SIZE) return "Ukuran maksimal 20MB"
+    if (file.size > MAX_SIZE) return "Ukuran maksimal 25MB"
     return null
   }
 
@@ -88,7 +88,7 @@ export default function FileUpload({ value, onChange }) {
           <div className="flex flex-col items-center gap-2 text-slate-400">
             <Upload size={24} />
             <span className="text-sm">Drag & drop atau klik untuk upload PDF</span>
-            <span className="text-xs">PDF (maks 20MB)</span>
+            <span className="text-xs">PDF (maks 25MB)</span>
           </div>
         )}
       </div>

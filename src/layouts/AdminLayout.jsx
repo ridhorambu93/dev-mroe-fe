@@ -6,6 +6,8 @@ const sidebarMenus = [
   { label: "Dashboard", path: "/admin", icon: "📊" },
   { label: "Kelola Konten", path: "/admin/publikasi", icon: "📄" },
   { label: "Users", path: "/admin/users", icon: "👥" },
+  { label: "Activity", path: "/admin/activity", icon: "🕐" },
+  { label: "Customer Feedback", path: "/admin/feedback", icon: "💬" },
   { label: "Profil", path: "/admin/profile", icon: "👤" },
   { label: "Settings", path: "/admin/settings", icon: "⚙️" },
 ]
@@ -30,7 +32,7 @@ const AdminLayout = () => {
   return (
     <div className="min-h-screen flex">
       {/* SIDEBAR */}
-      <aside className="w-64 bg-slate-900 text-white flex flex-col animate-slide-in-left">
+      <aside className="w-64 bg-slate-900 text-white flex flex-col h-screen sticky top-0 animate-slide-in-left">
         {/* Sidebar Header */}
         <div className="px-5 py-5 border-b border-slate-700">
           <h2 className="font-bold text-lg">Admin Panel</h2>
@@ -38,7 +40,7 @@ const AdminLayout = () => {
         </div>
 
         {/* Navigation */}
-        <nav className="flex-1 px-3 py-4 space-y-1">
+        <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-1">
           {sidebarMenus.map((menu) => (
             <NavLink
               key={menu.path}

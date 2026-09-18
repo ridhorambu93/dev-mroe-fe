@@ -327,7 +327,6 @@ const AdminDashboardNew = () => {
                 <th className="pb-2 font-medium">Unduhan</th>
                 <th className="pb-2 font-medium">Rating</th>
                 <th className="pb-2 font-medium">Jumlah Feedback</th>
-                <th className="pb-2 font-medium">Aksi</th>
               </tr>
             </thead>
             <tbody>
@@ -345,11 +344,6 @@ const AdminDashboardNew = () => {
                     </span>
                   </td>
                   <td className="py-3 text-slate-600">{item.feedback}</td>
-                  <td className="py-3">
-                    <button className="px-3 py-1 rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 transition text-xs">
-                      Lihat Detail
-                    </button>
-                  </td>
                 </tr>
               ))}
             </tbody>

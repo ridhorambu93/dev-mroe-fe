@@ -26,8 +26,27 @@ const MONTH_NAMES = [
 export function buildPeriodFields(periodType) {
   if (periodType === "By Event") {
     return [
-      { name: "startDate", label: "Tanggal Mulai", type: "date", required: true, table: true },
-      { name: "endDate", label: "Tanggal Selesai", type: "date", required: true, table: true },
+      {
+        name: "period_value",
+        label: "Nama Event",
+        type: "text",
+        required: true,
+        table: true,
+      },
+      {
+        name: "startDate",
+        label: "Tanggal Mulai",
+        type: "date",
+        required: true,
+        table: true,
+      },
+      {
+        name: "endDate",
+        label: "Tanggal Selesai",
+        type: "date",
+        required: true,
+        table: true,
+      },
     ]
   }
   return [

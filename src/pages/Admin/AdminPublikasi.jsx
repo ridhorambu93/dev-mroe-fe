@@ -140,7 +140,8 @@ function SectionContent({ page }) {
     base.push({ name: "description", label: "Deskripsi", type: "text", table: true })
     base.push(...buildPeriodFields(periodType))
     base.push(
-      { name: "author", label: "Penyusun", type: "text", required: true, table: true },
+      { name: "authors", label: "Penyusun", type: "tags", required: true, table: false },
+      { name: "composing_units", label: "Unit Penyusun", type: "tags-with-other", options: ["Kantor Pusat", "Kantor Wilayah", "Kantor Cabang"], table: false },
       { name: "file", label: "File (PDF)", type: "file" },
     )
     return base

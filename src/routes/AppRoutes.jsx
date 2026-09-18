@@ -8,7 +8,7 @@ import HomePage from "../pages/HomePage.jsx"
 import NotFoundPage from "../pages/NotFoundPage.jsx"
 
 // Static content pages
-import PublikasiPage from "../pages/publikasi/PublikasiPage.jsx"
+import PublikasiPage from "../pages/Publikasi/PublikasiPage.jsx"
 import MakroEkonomiPage from "../pages/MakroEkonomi/MakroEkonomiPage.jsx"
 import IndustriPage from "../pages/Industri/IndustriPage.jsx"
 import RegionalPage from "../pages/Regional/RegionalPage.jsx"
@@ -20,17 +20,19 @@ import UserProfilePage from "../pages/Profile/UserProfilePage.jsx"
 // Admin pages
 import AdminDashboard from "../pages/Admin/AdminDashboard.jsx"
 import AdminDashboardNew from "../pages/Admin/AdminDashboardNew.jsx"
-
-// Ganti AdminDashboardNew <-> AdminDashboard sesuai kebutuhan
-const ActiveDashboard = AdminDashboardNew
 import AdminProfile from "../pages/Admin/AdminProfile.jsx"
 import AdminPublikasi from "../pages/Admin/AdminPublikasi.jsx"
 import AdminUsers from "../pages/Admin/AdminUsers.jsx"
 import AdminSettings from "../pages/Admin/AdminSettings.jsx"
+import AdminActivity from "../pages/Admin/AdminActivity.jsx"
+import AdminFeedback from "../pages/Admin/AdminFeedback.jsx"
 
 import MainLayout from "../layouts/MainLayout.jsx"
 import AdminLayout from "../layouts/AdminLayout.jsx"
 import ProtectedRoute from "./ProtectedRoute.jsx"
+
+// Ganti AdminDashboardNew <-> AdminDashboard sesuai kebutuhan
+const ActiveDashboard = AdminDashboardNew
 
 NProgress.configure({ showSpinner: false, speed: 300, minimum: 0.1 })
 
@@ -100,6 +102,8 @@ const AppRoutes = () => {
           <Route index element={<ActiveDashboard />} />
           <Route path="publikasi" element={<AdminPublikasi />} />
           <Route path="users" element={<AdminUsers />} />
+          <Route path="activity" element={<AdminActivity />} />
+          <Route path="feedback" element={<AdminFeedback />} />
           <Route path="settings" element={<AdminSettings />} />
           <Route path="profile" element={<AdminProfile />} />
         </Route>
