@@ -70,3 +70,8 @@ export const PAGE_CONFIGS = [
     subsectionPeriods: { "Materi": "event" },
   },
 ]
+
+export const pageService = {
+  getAll: () => Promise.resolve([...PAGE_CONFIGS]),
+  getBySlug: (slug) => Promise.resolve(PAGE_CONFIGS.find((p) => p.slug === slug) ?? null),
+}
